@@ -26,6 +26,7 @@ TEMPLATE_DEBUG = True
 
 TEMPLATE_DIRS = (
     '/home/aluque/Djangos/Proyecto-noticias-django/hello_noticias/hello_noticias/hello_world/templates',
+    '/home/aluque/Djangos/Proyecto-noticias-django/hello_noticias/hello_noticias/news/templates'
 )
 
 ALLOWED_HOSTS = []
@@ -40,7 +41,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'hello_noticias.hello_world'
+    'hello_noticias.hello_world',
+    'hello_noticias.news'
 )
 
 MIDDLEWARE_CLASSES = (

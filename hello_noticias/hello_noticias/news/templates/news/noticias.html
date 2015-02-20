@@ -1,0 +1,15 @@
+<html>
+<head>
+    <tittle><h1>News</h1></tittle>
+</head>
+<body>
+    
+    <form method="post" action="">
+        {{ mensaje.as_p }}
+        {% csrf_token %}
+        <input type="submit" value="Submit">
+    </form>
+    
+</body>
+
+</html>

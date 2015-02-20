@@ -1,11 +1,9 @@
-from django.http import HttpResponse
-from django.template import Template, Context
-from django.template.loader import get_template
-# from django.shortcuts import render
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 
 
 def index(request):
-    index_template = get_template('hello_world/index.html')
     hiworld = "Hello world!!!"
-    html = index_template.render(Context({'mensaje': hiworld}))
-    return HttpResponse(html)
+    return render_to_response('hello_world/index.html',
+                              {'mensaje': hiworld},
+                              context_instance=RequestContext(request))
