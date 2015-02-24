@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'template_repl',
     'hello_noticias.hello_world',
     'hello_noticias.news'
 )

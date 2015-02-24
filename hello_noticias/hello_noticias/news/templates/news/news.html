@@ -1,0 +1,42 @@
+{% extends "news/base.html" %}
+
+{% block title %}News{% endblock %}
+
+{% block body %} <p>Welcome to news website "Learning Python". In the following links you can create a new or update an existing new.</p>
+
+   <p>
+    
+    <a href="{% url "create" %}">Create a new</a>
+    <br>
+    <a href="{% url "update_get" %}">Update a new</a></p>{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <html>
+<head>
+    <tittle><h1>News</h1></tittle>
+</head>
+<body>
+   <p>Welcome to news website "Learning Python". In the following links you can create a new or update an existing new.</p>
+
+   <p>
+    
+    <a href="{% url "create" %}">Create a new</a>
+    <br>
+    <a href="{% url "update_get" %}">Update a new</a></p>
+</body>
+
+</html> -->

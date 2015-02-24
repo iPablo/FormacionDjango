@@ -8,12 +8,4 @@ class News(models.Model):
     new_date = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
-        return "Title: %s \nDescription: %s \nDate: %s" % (self.title,
-                                                           self.description,
-                                                           self.new_date)
-
-
-class NewsForm(ModelForm):
-    class Meta:
-        model = News
-        fields = ['title', 'description']
+        return self.title
