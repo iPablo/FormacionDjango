@@ -1,12 +1,10 @@
-<html>
-    <head>
-        <title>Create a new</title>
-    </head>
-    <body>
-        <form method="post" action="">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" value="Submit">
-        </form>
-    </body>
-</html>
+{% extends "news/base.html" %}
+
+{% block title %}{{ block.super }} - Create a new{% endblock %}
+
+{% block body %}
+    <form method="post" action="">
+        {% csrf_token %}
+        {{ form.as_p }}
+    <input type="submit" value="Submit">
+{% endblock %}

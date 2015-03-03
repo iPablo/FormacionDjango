@@ -1,42 +1,31 @@
 {% extends "news/base.html" %}
 
-{% block title %}News{% endblock %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% get_available_languages as LANGUAGES %}
+{% get_current_language_bidi as LANGUAGE_BIDI %}
 
-{% block body %} <p>Welcome to news website "Learning Python". In the following links you can create a new or update an existing new.</p>
+{% block title %}{{ block.super }} - News{% endblock %}
 
+{% block body %}
+  {% if messages %}
+    <ul>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+
+  <p>
+    {% trans "Welcome to news website Learning Python. In the following links you can create a new or update an existing new." %}</p>
    <p>
-    
-    <a href="{% url "create" %}">Create a new</a>
-    <br>
-    <a href="{% url "update_get" %}">Update a new</a></p>{% endblock %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- <html>
-<head>
-    <tittle><h1>News</h1></tittle>
-</head>
-<body>
-   <p>Welcome to news website "Learning Python". In the following links you can create a new or update an existing new.</p>
-
-   <p>
-    
-    <a href="{% url "create" %}">Create a new</a>
-    <br>
-    <a href="{% url "update_get" %}">Update a new</a></p>
-</body>
-
-</html> -->
+      <ul>
+        <li>
+            <a href="{% url "create" %}">{% trans "Create a new" %}</a>
+        </li>
+        <li>
+          <a href="{% url "update_get" %}">{% trans "Update a new" %}</a>
+        </li>
+    </p>
+{% endblock %}
