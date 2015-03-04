@@ -1,0 +1,27 @@
+<html>
+    <head>
+        <title>My news site - News</title>
+    </head>
+    <body>
+        
+  
+
+
+  <p>
+    Welcome to news website Learning Python. In the following links you can create a new or update an existing new.</p>
+   <p>
+      <ul>
+        <li>
+            <a href="/news/create/">Create a new</a>
+        </li>
+        <li>
+          <a href="/news/update/">Update a new</a>
+        </li>
+    </p>
+
+    </body>
+    <footer>
+        <p>- Project hello news -</p>
+    </footer>
+
+</html>

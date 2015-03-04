@@ -8,24 +8,15 @@
 {% block title %}{{ block.super }} - News{% endblock %}
 
 {% block body %}
-  {% if messages %}
-    <ul>
-      {% for message in messages %}
-        <li>{{ message }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-
-
   <p>
     {% trans "Welcome to news website Learning Python. In the following links you can create a new or update an existing new." %}</p>
    <p>
       <ul>
         <li>
-            <a href="{% url "create" %}">{% trans "Create a new" %}</a>
+            <a href="{% url "news_create" %}">{% trans "Create a new" %}</a>
         </li>
         <li>
-          <a href="{% url "update_get" %}">{% trans "Update a new" %}</a>
+          <a href="{% url "news_list" %}">{% trans "List of all news" %}</a>
         </li>
     </p>
 {% endblock %}

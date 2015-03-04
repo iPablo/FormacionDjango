@@ -3,6 +3,15 @@
         <title>{% block title %}My news site{% endblock %}</title>
     </head>
     <body>
+        {% block messages %}
+          {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endblock %}
         {% block body %}
         {% endblock %}
     </body>

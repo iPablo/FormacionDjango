@@ -1,0 +1,14 @@
+{% extends "news/base.html" %}
+
+{% block title %}{{ block.super }} - List of news{% endblock %}
+
+{% block body %}
+    <h2>News</h2>
+    <ul>
+        {% for news in object_list %}
+            <li>
+                <a href="{% url 'news_update' news.id %}">{{ news.id }} - {{ news.title }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
