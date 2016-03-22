@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Vista ampliada</title>
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+<div class="jumbotron">
+	<h1 style="color: #A1D490; text-align: center; text-shadow: 2px 2px green">Ampliación</h1>
+</div>
+
+{% if noticia %}
+        <div class="panel panel-primary">
+        	<div class="panel-heading">
+        		<h3>{{ noticia.title }}</h3>
+        	</div>
+            <div class="panel-body">
+                <p>{{ noticia.description }}</p>
+            </div>
+        	<div class="panel-footer" style="text-align: right;">
+                <p><b><u>Fecha de publicación:</u></b>{{ noticia.publish_date }}</p>
+        		<a href="{% url 'proyectoinicio:noticias'%} " style="color: white"><button class="btn btn-primary">Volver</button></a>
+        	</div>
+        </div>
+        <div class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header"><a class="navbar-brand" href="#">Operaciones</a></div>
+            <ul class="nav navbar-nav">
+                <li><a href="{% url 'proyectoinicio:editar' noticia.id%}">Editar</a></li>
+                <li><a onclick="return confirm('¿está seguro?')" href="{% url 'proyectoinicio:borrar' noticia.id%}">Borrar</a></li>
+            </ul>
+        </div>
+        </div>
+{% else %}
+    <p>No se ha podido devolver la noticia en cuestión. Contacte al administrador.</p>
+{% endif %}
+</div>
+
+</body>
+</html>

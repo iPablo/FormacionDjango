@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Proyecto de iniciación</title>
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+	<div class="jumbotron">
+		<h1 style="color: #A1D490; text-align: center; text-shadow: 2px 2px green">Noticias Django</h1>
+	</div>
+	{% if mensaje_confirmacion %}
+		<h2 style="color: green;">{{  mensaje_confirmacion }}</h2>
+	{% endif %}
+	<div class="panel-group">
+		<div class="panel panel-success">
+			<div class="panel-heading">
+				<h3 style="text-align: center;">Noticias del día</h3>
+			</div>
+			<div class="panel-body">
+				<p>Aquí te pondremos todas las noticias del día. Podrás crearlas también, si quieres.</p>
+			</div>
+			<div class="panel-footer">
+				<a href="{% url 'proyectoinicio:noticias'%}"><button class="btn btn-default">¡Llévame!</button></a>
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 style="text-align: center;">Eventos del día</h3>
+			</div>
+			<div class="panel-body">
+				<p>¿quieres saber lo que ocurre en tu ciudad? Estás en el sitio indicado. También puedes dejar eventos que conozcas.</p>
+			</div>
+			<div class="panel-footer">
+				<a href="{% url 'proyectoinicio:eventos'%}"><button class="btn btn-default">¡Llévame!</button></a>			
+			</div>
+			</div>
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h3 style="text-align: center;">Noticias y eventos</h3>
+			</div>
+			<div class="panel-body">
+				<p>¿No te decides? No te preocupes. Lo tenemos todo para ti.</p>
+			</div>
+			<div class="panel-footer">
+	 			<a href="{% url 'proyectoinicio:todo'%}"><button class="btn btn-default">¡Llévame!</button></a>
+	  		</div>
+		</div>
+</div>
+</body>
+</html>
