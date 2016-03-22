@@ -21,10 +21,6 @@
         <label class="control-label" for="description">Descripción:</label>
         <input id= "description" type="text" name="description" placeholder="La noticia que quieras dar"/>
     </div>
-     <div class="form-group">
-        <label class="control-label" for="fecha">Fecha de publicación:</label>
-        <input id= "fecha" type="datetime" name="fecha" placeholder="YYYY-MM-DD HH:MM"/>
-    </div>
       {% if mensaje_error %}
         <h6 style="color: red;">{{  mensaje_error }}, recuerda respetar los formatos.</h6>
       {% endif %}

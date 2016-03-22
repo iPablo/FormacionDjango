@@ -9,6 +9,7 @@ from django.core.urlresolvers import reverse
 from django.views import generic
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+import datetime
 
 def index(request):
 	return render(request, 'proyectoinicio/index.html')
@@ -82,7 +83,7 @@ def crear(request):
 	try:
 		titulo=request.POST['title']
 		descripcion=request.POST['description']
-		fecha=request.POST['fecha']
+		fecha=timezone.now()
 		noticia = NewsItem(title=titulo, description=descripcion, publish_date=fecha)
 		noticia.save()
 		mensaje_confirmacion = "Se ha añadido la noticia correctamente. ¡Enhorabuena!"
