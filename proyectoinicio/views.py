@@ -9,7 +9,9 @@ from django.core.urlresolvers import reverse
 from django.views import generic
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+from django.views.generic import CreateView, DeleteView, DetailView, UpdateView
 import datetime
+from django.contrib.messages.views import SuccessMessageMixin
 
 def index(request):
 	return render(request, 'proyectoinicio/index.html')
@@ -98,4 +100,50 @@ def crear(request):
 		}
 		return render(request, 'proyectoinicio/creaNoticia.html', contexto)
 
-		
+class NoticiasView(generic.ListView):
+	model =  NewsItem
+	template_name = 'proyectoinicio/bloquenoticias.html'
+	context_object_name = 'bloque_noticias'
+	def get_queryset(self):
+		return NewsItem.objects.order_by('-publish_date')
+
+class NoticiasDetalleView(generic.DetailView):
+	model = NewsItem
+	pk_url_kwarg ='noticia_pk'
+	template_name = 'proyectoinicio/vistaAmpliada.html'
+	context_object_name = 'noticia' #Estamos diciendo que el objeto que trata se llama "noticia"
+
+class NoticiasDelete(generic.DeleteView):
+	model = NewsItem
+	pk_url_kwarg ='noticia_pk'
+	def get_success_url(self):
+		return reverse('proyectoinicio:index')
+
+class NoticiasUpdate(SuccessMessageMixin, generic.UpdateView):
+	model = NewsItem
+	success_message = "Se ha actualizado correctamente"
+	fields = ['title' , 'description' , 'publish_date']
+	context_object_name  = 'noticia'
+	pk_url_kwarg ='noticia_pk'
+	#template_name= 'proyectoinicio/vistaEdicion.html' POR DEFECTO ES nombremodel_form
+	def get_success_url(self):
+		return reverse('proyectoinicio:index')
+
+class NoticiasCreate(SuccessMessageMixin, generic.CreateView):
+	success_message="Se ha creado correctamente"
+	model=NewsItem
+	template_name= "proyectoinicio/newsitem_create_form.html"
+	fields = ['title' , 'description', 'publish_date']
+	def get_success_url(self):
+		return reverse('proyectoinicio:index')
+
+class EventsView(generic.ListView):
+	model= Event
+	template_name = 'proyectoinicio/bloqueeventos.html'
+	context_object_name= 'bloque_eventos'
+	def get_queryset(self):
+		return Event.objects.order_by('-start_date')
+
+class EventDetail(generic.DetailView):
+	model = Event
+	fields = ['title', 'description' , 'start_date' , ' event_date']

@@ -9,7 +9,7 @@
 <body>
 <div class="container">
 <div class="jumbotron">
-	<h1 style="color: #A1D490; text-align: center; text-shadow: 2px 2px green">Todo Django</h1>
+	<h1 style="color: #A1D490; text-align: center; text-shadow: 2px 2px green">Eventos Django</h1>
 </div>
 
 {% if bloque_eventos %}
@@ -20,7 +20,7 @@
         		<h3 style="text-align: center;">{{ evento.title }}</h3>
         	</div>
         	<div class="panel-footer" style="text-align: right;">
-        		<button class="btn btn-success"><a href="">Ver mas</a></button>
+        		<a href="{%url 'proyectoinicio:ampliareventos' evento.id %}"><button class="btn btn-success">Ver mas </button></a> 
         	</div>
         </div>
     {% endfor %}
@@ -28,7 +28,9 @@
 {% else %}
     <p>¡No se ha devuelto ningún evento!</p>
 {% endif %}
+<a href="{% url 'proyectoinicio:index'%} " style="color: white;"><button class="btn btn-warning">Volver</button></a>
 </div>
+
 
 </body>
 </html>

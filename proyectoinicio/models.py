@@ -1,6 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from __future__ import unicode_literals
 import datetime
 from django.db import models
+from django.utils import timezone
 
 class Base(models.Model):
 	title = models.CharField(max_length=200)
@@ -14,6 +18,15 @@ class BaseNews(Base):
 
 class NewsItem(BaseNews):
 	publish_date = models.DateTimeField('Fecha publicada')
+	def ha_pasado(self): #Es un metodo para comprobar que si las noticias tienen mas de dos dias
+						 #las seleccione y se vea que son antiguas.
+						 
+		ahora = timezone.now()
+		diferencia_dias = ahora-self.publish_date
+		if diferencia_dias.days > 2:  
+			return True
+		else:
+			return False
 
 class Event(BaseNews):
 	start_date= models.DateTimeField('Fecha de inicio')

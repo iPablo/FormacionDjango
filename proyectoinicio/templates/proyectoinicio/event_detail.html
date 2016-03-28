@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Vista ampliada</title>
+	<title>Evento ampliado</title>
 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
@@ -12,40 +12,38 @@
 	<h1 style="color: #A1D490; text-align: center; text-shadow: 2px 2px green">Ampliación</h1>
 </div>
 
-{% if noticia %}
+{% if event %}
         <div class="panel {% if noticia.ha_pasado %}
                             panel-warning
                             {% else %}
-                            panel-primary
+                            panel-success
                         {% endif %}
                         ">
         	<div class="panel-heading">
-        		<h3>{{ noticia.title }}</h3>
+        		<h3>{{ event.title }}</h3>
         	</div>
             <div class="panel-body">
-                <p>{{ noticia.description }}</p>
-                {% if noticia.ha_pasado %}
-                <p style="text-align: right; text-decoration: underline;">Esta noticia no es reciente. Deberias borrarla.</p>
-                {% endif %}
+                <p>{{ event.description }}</p>
+                <br />
+                <p>Fecha de inicio: {{ event.start_date }}</p>
+                <p>Fecha de fin: {{ event.end_date }}</p>
             </div>
         	<div class="panel-footer" style="text-align: right;">
-                <p><b><u>Fecha de publicación:</u></b>{{ noticia.publish_date }}</p>
-        		<a href="{% url 'proyectoinicio:noticias'%} " style="color: white"><button class="btn btn-primary">Volver</button></a>
+                <p><b><u>Duración:</u></b> {{ event.dameDuracion }} dias</p>
+        		<a href="{% url 'proyectoinicio:eventos'%} " style="color: white"><button class="btn btn-primary">Volver</button></a>
         	</div>
         </div>
         <div class="navbar navbar-inverse">
         <div class="container-fluid">
             <div class="navbar-header"><a class="navbar-brand" href="#">Operaciones</a></div>
             <ul class="nav navbar-nav">
-                <li><a href="{% url 'proyectoinicio:editar' noticia.id%}">Editar</a></li>
-                <li><a href="{% url 'proyectoinicio:editarVBC' noticia.id%}">Editar (VBC)</a></li>
-                <li><a onclick="return confirm('¿está seguro?')" href="{% url 'proyectoinicio:borrar' noticia.id%}">Borrar</a></li>
-                <li><a href="{% url 'proyectoinicio:borrarVBC' noticia.id%}">Borrar (VBC)</a></li>
+                <li><a href="">Editar</a></li>
+                <li><a href="">Borrar</a></li>
             </ul>
         </div>
         </div>
 {% else %}
-    <p>Esa noticia no existe.</p>
+    <p>Ese evento no existe</p>
 {% endif %}
 </div>
 

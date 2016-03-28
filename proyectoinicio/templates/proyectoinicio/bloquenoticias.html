@@ -14,6 +14,8 @@
 <div class="panel panel-primary">
 	<div class="panel-body" style="text-align: center;">
 		<p>¿Quieres crear una noticia? Pulsa <a href="{% url 'proyectoinicio:crearNoticia' %}">¡aquí!</a></p>
+        <p>Si quieres probar en VBC, 
+         Pulsa <a href="{% url 'proyectoinicio:crearVBC' %}">¡aquí!</a></p>
 	</div>
 </div>
 {% if bloque_noticias %}
@@ -21,16 +23,21 @@
     {% for noticia in bloque_noticias %}
         <div class="panel panel-primary">
         	<div class="panel-heading">
-        		<h3>{{ noticia.title }}</h3>
+        		<h3>{{ noticia.title }}
+                </h3>
+                {% if noticia.ha_pasado %}
+                <h4 style="text-align: right; color: black">Esta noticia es antigua.</h4>
+                {% endif %}
         	</div>
         	<div class="panel-footer" style="text-align: right;">
         		<a href="{% url 'proyectoinicio:ampliar' noticia.id %}" style="color: white"><button class="btn btn-primary">Ver mas</button></a>
+                <a href="{% url 'proyectoinicio:ampliarVBC' noticia.id %}" style="color: white"><button class="btn btn-success">Ver mas (VBC)</button></a>
         	</div>
         </div>
     {% endfor %}
     </div>
 {% else %}
-    <p>¡No se ha devuelto ninguna noticia!</p>
+    <p>No hay noticias disponibles</p>
 {% endif %}
 <a href="{% url 'proyectoinicio:index'%} " style="color: white;"><button class="btn btn-warning">Volver</button></a>
 </div>
