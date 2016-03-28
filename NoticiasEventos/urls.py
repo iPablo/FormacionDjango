@@ -1,6 +1,6 @@
 from django.conf.urls import include, url
 from . import views
-from NoticiasEventos.views import v2List, v2Create, v2Update, v2Delete
+from NoticiasEventos.views import v2List, v2Create, v2Update, v2Delete, EventList, EventCreate, EventUpdate, EventDelete
 
 app_name = "NoticiasEventos" 
 urlpatterns = [
@@ -16,4 +16,10 @@ urlpatterns = [
 	url(r'^v2/Create/$', v2Create.as_view(), name='v2Create'),
 	url(r'^v2/Update/(?P<pk>[0-9]+)/$', v2Update.as_view(), name="v2Update"),
 	url(r'^v2/Delete/(?P<pk>[0-9]+)/$', v2Delete.as_view(), name="v2Delete"),
+
+	#Events
+	url(r'^event/$', EventList.as_view(), name="eventList"),
+	url(r'^event/Create/$', EventCreate.as_view(), name='eventCreate'),
+	url(r'^event/Update/(?P<pk>[0-9]+)/$', EventUpdate.as_view(), name="eventUpdate"),
+	url(r'^event/Delete/(?P<pk>[0-9]+)/$', EventDelete.as_view(), name="eventDelete"),
 ]

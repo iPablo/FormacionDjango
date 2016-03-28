@@ -1,11 +1,15 @@
 from django.shortcuts import render
 from .models import NewsItem, Event
-from .forms import NewsItemForm
+from .forms import NewsItemForm, EventForm
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.core.urlresolvers import reverse_lazy
 
 def index(request):
 	return render(request, 'NoticiasEventos/index.html', {})
+
+#
+# COMIENZO V1
+# 
 
 def v1List(request):
 	result  = NewsItem.objects.all()
@@ -49,6 +53,14 @@ def v1Delete(request, pk):
 	result  = NewsItem.objects.all()
 	return render(request, 'NoticiasEventos/v1List.html', {'result': result})
 
+#
+# FIN V1
+# 
+
+#
+# COMIENZO V2
+# 
+
 class v2List(ListView):
 	model = NewsItem
 	context_object_name = "result"
@@ -70,3 +82,37 @@ class v2Delete(DeleteView):
 	model = NewsItem
 	success_url = reverse_lazy('NoticiasEventos:v2List')
 
+#
+# FIN V2
+# 
+
+#
+# COMIENZO EVENT
+# 
+
+class EventList(ListView):
+	model = Event
+	context_object_name = "result"
+	template_name = "NoticiasEventos/eventList.html"
+
+class EventCreate(CreateView):
+	model = Event
+	success_url = reverse_lazy('NoticiasEventos:eventList')
+	fields = ['title', 'description', 'start_date', 'end_date']
+	template_name = "NoticiasEventos/eventCreate.html"
+
+class EventUpdate(UpdateView):
+	model = Event
+	success_url = reverse_lazy('NoticiasEventos:eventList')
+	fields = ['title', 'description', 'start_date', 'end_date']
+	template_name = "NoticiasEventos/eventCreate.html"
+
+class EventDelete(DeleteView):
+	model = Event
+	success_url = reverse_lazy('NoticiasEventos:eventList')
+		
+#
+# FIN EVENT
+# 
+	
+		
