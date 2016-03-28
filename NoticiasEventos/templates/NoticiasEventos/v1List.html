@@ -18,8 +18,8 @@
 			<td>{{ x.title }}</td>
 			<td>{{ x.description }}</td>
 			<td>{{ x.publish_date }}</td>
-			<td><a href="{% url 'NoticiasEventos.views.v1Update' pk=x.pk %}">Update Item</a></td>
-			<td><a href="{% url 'NoticiasEventos.views.v1Delete' pk=x.pk %}">Delele Item</a></td>
+			<td><a href="{% url 'NoticiasEventos:v1Update' pk=x.pk %}">Update Item</a></td>
+			<td><a href="{% url 'NoticiasEventos:v1Delete' pk=x.pk %}">Delele Item</a></td>
 		</tr>
 		{% endfor %}
 		{% else %}
@@ -30,6 +30,6 @@
 	</tbody>
 </table>
 <ul class="nav navbar-nav">
-	<li><a href="{% url 'NoticiasEventos.views.v1Create' %}"><span class="glyphicon glyphicon-plus"></span> Add Item</a></li>
+	<li><a href="{% url 'NoticiasEventos:v1Create' %}"><span class="glyphicon glyphicon-plus"></span> Add Item</a></li>
 </ul>
 {% endblock %}

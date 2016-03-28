@@ -9,6 +9,21 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 </head>
 <body>
+	<nav class="navbar navbar-default" role="navigation">
+		<div class="container-fluid">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+				<a class="navbar-brand" href="{% url 'NoticiasEventos:index' %}">New & Event</a>
+			</div>
+			<div class="collapse navbar-collapse navbar-ex1-collapse">
+				<ul class="nav navbar-nav">
+					<li><a href="{% url 'NoticiasEventos:v1List' %}">V1 News</a></li>
+					<li><a href="{% url 'NoticiasEventos:v2List' %}">V2 News</a></li>
+					<li><a href="{% url 'NoticiasEventos:eventList' %}">Events</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
 	<div class="container-fluid"><br>
 		<div class="row">
 			<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-md-offset-3">
