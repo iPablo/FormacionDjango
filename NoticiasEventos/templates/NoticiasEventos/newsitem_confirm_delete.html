@@ -1,0 +1,10 @@
+{% extends 'NoticiasEventos/base.html' %}
+
+{% block content %}
+<div class="well">
+	<form method="post">{% csrf_token %}
+		¿Estás seguro que deseas borrar la noticia "{{ object }}"?
+		<input type="submit" value="Ok!" />
+	</form>
+</div>
+{% endblock %}

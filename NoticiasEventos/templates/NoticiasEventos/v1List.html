@@ -1,0 +1,35 @@
+{% extends 'NoticiasEventos/base.html' %}
+
+{% block content %}
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th>Title</th>
+			<th>Description</th>
+			<th>Publish Date</th>
+			<th>Update</th>
+			<th>Delete</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% if result %}
+		{% for x in result %}
+		<tr>
+			<td>{{ x.title }}</td>
+			<td>{{ x.description }}</td>
+			<td>{{ x.publish_date }}</td>
+			<td><a href="{% url 'NoticiasEventos:v1Update' pk=x.pk %}">Update Item</a></td>
+			<td><a href="{% url 'NoticiasEventos:v1Delete' pk=x.pk %}">Delele Item</a></td>
+		</tr>
+		{% endfor %}
+		{% else %}
+		<tr>
+			<td>No items found.</td>
+		</tr>
+		{% endif %}
+	</tbody>
+</table>
+<ul class="nav navbar-nav">
+	<li><a href="{% url 'NoticiasEventos:v1Create' %}"><span class="glyphicon glyphicon-plus"></span> Add Item</a></li>
+</ul>
+{% endblock %}

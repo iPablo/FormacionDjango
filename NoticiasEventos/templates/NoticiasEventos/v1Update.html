@@ -1,0 +1,29 @@
+{% extends 'NoticiasEventos/base.html' %}
+
+{% block content %}
+<div class="well">
+	{% if inputs %}
+	<form method="POST" class="post-form" action="{% url 'NoticiasEventos:v1Update' pk=inputs.pk %}">{% csrf_token %}
+		<div class="form-group">
+			<label>Title: </label>
+			<div class="">
+				<input type="text" name="title" class="form-control" value="{{ inputs.title }}" required="required">
+			</div>
+		</div>
+		<div class="form-group">
+			<label>Description: </label>
+			<div class="">
+				<input type="text" name="description" class="form-control" value="{{ inputs.description }}" required="required">
+			</div>
+		</div>
+		<div class="form-group">
+			<label>Publish Date: </label>
+			<div class="">
+				<input type="text" name="publish_date" id="input" class="form-control" placeholder="YYY-MM-DD HH:mm:ss" required="required">
+			</div>
+		</div>
+		<button type="submit" class="save btn btn-default">Save</button>
+	</form>
+	{% endif %}
+</div>
+{% endblock %}
