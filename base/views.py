@@ -12,6 +12,7 @@ def index(request):
     return render(request, 'base/index.html')
 
 
+
 def obtener_todo(request):
     news = NewsItem.objects.order_by('-publish_date')
     events = Event.objects.order_by('-start_date')
