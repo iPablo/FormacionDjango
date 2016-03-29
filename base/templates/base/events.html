@@ -1,0 +1,13 @@
+<h1>Eventos</h1>
+{% if events %}
+    <ul>
+    {% for item in events %}
+        <li><a href="{% url 'base:detail_events' item.id %}">{{ item.title }}</a><br/>
+            <a href="{% url 'base:update_event' item.id %}">Editar</a><br/>
+            <a href="{% url 'base:delete_event' item.id %}">Eliminar</a></li><br/>
+    {% endfor %}
+    </ul>
+    <a href="{% url 'base:create_event' %}"><button>Nuevo</button></a>
+{% else %}
+    <p>No hay noticias disponibles</p>
+{% endif %}
