@@ -146,4 +146,30 @@ class EventsView(generic.ListView):
 
 class EventDetail(generic.DetailView):
 	model = Event
-	fields = ['title', 'description' , 'start_date' , ' event_date']
+	fields = ['title', 'description' , 'start_date' , 'end_date']
+	template_name="proyectoinicio/event_detail.html"
+
+class EventCreate(SuccessMessageMixin, generic.CreateView):
+	model = Event
+	fields = ['title', 'description' , 'start_date' , 'end_date']
+	template_name="proyectoinicio/event_create_form.html"
+	success_message = "Se ha creado el evento satisfactoriamente."
+	def get_success_url(self):
+		return reverse('proyectoinicio:index')
+
+class EventDelete(SuccessMessageMixin, generic.DeleteView):
+	model = Event
+	pk_url_kwarg ='event_pk'
+	success_message = "Se ha borrado satisfactoriamente"
+	def get_success_url(self):
+		return reverse('proyectoinicio:index')
+
+class EventUpdate(SuccessMessageMixin, generic.UpdateView):
+	model = Event
+	success_message = "Se ha actualizado satisfactoriamente"
+	fields = ['title', 'description' , 'start_date' , 'end_date']
+	context_object_name = "evento"
+	pk_url_kwarg = "event_pk"
+	def get_success_url(self):
+		return reverse('proyectoinicio:index')
+
