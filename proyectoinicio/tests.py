@@ -27,6 +27,29 @@ class NewsItemMethodTests(TestCase):
 		noticia_pasada =  NewsItem(publish_date=hora)
 		self.assertEqual(noticia_pasada.ha_pasado(), True)
 
+class EventMethodTests(TestCase):
+
+	def test_dameDuracion_con_fechas_de_misma_fecha(self):
+		"""
+		dameDuracion() es un metodo que nos devuelve la duracion
+		en dias de un evento en forma de entero. Si metiesemos
+		la misma fecha, el resultado seria cero.
+		"""
+
+		fecha_inicio=timezone.now()+datetime.timedelta(days=1)
+		fecha_fin=timezone.now()+datetime.timedelta(days=1)
+		fecha_resultado=fecha_inicio-fecha_fin
+		self.assertEqual(fecha_resultado.days, 0)
+
+	def test_dameDuracion_con_fecha_de_fin_antes
+		"""
+		Como es obvio, la fecha de fin del evento no puede ser
+		antes que la fecha de inicio. 
+		"""
+		fecha_inicio=timezone.now()+datetime.timedelta(days=1)
+		fecha_fin=timezone.now()
+		fecha_resultado=fecha_inicio-fecha_fin
+		self.assertEqual(fecha_resultado.days,-1)
 
 def create_newsitemP(titulo, descripcion, dias):
 	"""
