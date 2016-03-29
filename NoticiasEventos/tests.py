@@ -7,11 +7,6 @@ from .forms import NewsItemForm, EventForm
 
 class NewsItemTestCase(TestCase):
 
-	def test_index(self):
-		'''Comprueba el acceso a index'''
-		response = self.client.get(reverse('NoticiasEventos:v2List'))
-		self.assertEqual(response.status_code, 200)
-
 	def test_index_v2List(self):
 		'''Comprueba el acceso a v2List'''
 		response = self.client.get(reverse('NoticiasEventos:v2List'))
@@ -36,9 +31,9 @@ class NewsItemTestCase(TestCase):
 		self.assertContains(response, "No items found.")
 		self.assertQuerysetEqual(response.context['result'], [])
 
-	def test_index(self):
+	def test_delete(self):
 		'''Comprueba el acceso a index'''
-		response = self.client.get(reverse('NoticiasEventos:v2List'))
+		response = self.client.get(reverse('NoticiasEventos:v2Delete'))
 		self.assertEqual(response.status_code, 200)
 
 
