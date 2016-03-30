@@ -6,7 +6,7 @@ from django.test.client import Client
 from .forms import NewsItemForm, EventForm
 import ipdb
 
-### NOTA: ORGANIZANDO 
+# import ipdb; ipdb.set_trace()
 
 class NewsItemTestCase(TestCase):
 
@@ -54,7 +54,7 @@ class NewsItemTestCase(TestCase):
 		self.assertEqual(response.status_code, 200)
 
 	def test_form_update_newsItemV2(self):
-		'''Comprueba el acceso a v1Update'''
+		'''Comprueba el acceso a v2Update'''
 		x = self.addNewsItem()
 		response = self.client.get(reverse('NoticiasEventos:v2Update', kwargs = {'pk': x.id}))
 		self.assertEqual(response.status_code, 200)
@@ -64,9 +64,39 @@ class NewsItemTestCase(TestCase):
 		x = self.addNewsItem()
 		self.client.get(reverse('NoticiasEventos:v1Delete', kwargs = {'pk':x.id}))
 		self.assertQuerysetEqual(NewsItem.objects.all(), [])
-	
 
-	
+class EventTestCase(TestCase):
+	def addEvent(self):
+		form = EventForm(data={'title': 'event title', 
+			'description': 'event description', 
+			'start_date': timezone.now(),
+			'end_date': timezone.now()})
+		form.is_valid()
+		form.save()
+		return Event.objects.get(title="event title")
 
+	def test_index_event(self):
+		'''Comprueba el acceso a eventList'''
+		response = self.client.get(reverse('NoticiasEventos:eventList'))
+		self.assertEqual(response.status_code, 200)
+		self.assertContains(response, "No items found.")
+		self.assertQuerysetEqual(response.context['result'], [])
+
+	def test_form_create_event(self):
+		'''Comprueba la validacion del formulario y la creacion del objeto Event'''
+		form = EventForm(data={'title': 'simplePrueba', 
+			'description': 'simplePrueba', 
+			'start_date': timezone.now(),
+			'end_date': timezone.now()})
+		self.assertTrue(form.is_valid())
+		form.save()
+		x = Event.objects.get(title="simplePrueba")
+		self.assertTrue(x)
 	
+	def test_form_update_event(self):
+		'''Comprueba el acceso a eventUpdate'''
+		x = self.addEvent()
+		response = self.client.get(reverse('NoticiasEventos:eventUpdate', kwargs = {'pk': x.id}))
+		self.assertEqual(response.status_code, 200)
+
 		

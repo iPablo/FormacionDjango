@@ -1,6 +1,8 @@
-from django.conf.urls import include, url
+from django.conf.urls import include, url, patterns
 from . import views
 from NoticiasEventos.views import v2List, v2Create, v2Update, v2Delete, EventList, EventCreate, EventUpdate, EventDelete
+from rest_framework.urlpatterns import format_suffix_patterns
+
 
 app_name = "NoticiasEventos" 
 urlpatterns = [
@@ -22,4 +24,12 @@ urlpatterns = [
 	url(r'^event/Create/$', EventCreate.as_view(), name='eventCreate'),
 	url(r'^event/Update/(?P<pk>[0-9]+)/$', EventUpdate.as_view(), name="eventUpdate"),
 	url(r'^event/Delete/(?P<pk>[0-9]+)/$', EventDelete.as_view(), name="eventDelete"),
+
+	#Api
+	url(r'^apiNewsItem/$', views.NewsItemListAPI.as_view(), name="apiNewsItem"),
+    url(r'^apiNewsItem/(?P<pk>[0-9]+)/$', views.NewsItemDetailAPI.as_view()),
+
+    url(r'^apiEvent/$', views.EventListAPI.as_view(), name="apiEvent"),
+    url(r'^apiEvent/(?P<pk>[0-9]+)/$', views.EventDetailAPI.as_view()),
 ]
+urlpatterns = format_suffix_patterns(urlpatterns)

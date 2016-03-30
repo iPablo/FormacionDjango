@@ -5,7 +5,6 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.core.urlresolvers import reverse_lazy
 
 # API
-
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
@@ -13,30 +12,62 @@ from rest_framework.parsers import JSONParser
 from .models import NewsItem, Event
 from .serializers import NewsItemSerializer, EventSerializer
 
-class JSONResponse(HttpResponse):
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import generics
 
-	def __init__(self, data, **kwargs):
-		content = JSONRenderer().render(data)
-		kwargs['content_type'] = 'aplication/json'
-		super(JSONResponse, self).__init__(content, **kwargs)
-
-@csrf_exempt		
-def newsItem_list(request):
+"""@api_view(['GET', 'POST'])		
+def newsItem_list(request, format=None):
 	if request.method == "GET":
 		x = NewsItem.objects.all()
 		serializer = NewsItemSerializer(x, many=True)
-		return JSONResponse(serializer.data)
+		return Response(serializer.data)
 	elif request.method == "POST":
-		data = JSONParser().parse(request)
-		serializer = NewsItemSerializer(data=data)
+		serializer = NewsItemSerializer(data=request.data)
 		if serializer.is_valid():
 			serializer.save()
-			return JSONResponse(serializer.data, status=201)
-		return JSONResponse(serializer.errors, status=400)
+			return Response(serializer.data, status=status.HTTP_201_CREATED)
+		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@csrf_exempt
-def function():
-	pass
+@api_view(['GET', 'PUT', 'DELETE'])
+def newsItem_detail(request, pk, format=None):
+	try:
+		x = NewsItem.objects.get(pk=pk)
+	except NewsItem.DoesNotExist:
+		return Response(status=status.HTTP_404_NOT_FOUND)
+
+	if request.method == 'GET':
+		serializer = NewsItemSerializer(x)
+		return Response(serializer.data)
+
+	elif request.method == 'PUT':
+		serializer = NewsItemSerializer(x, data=request.data)
+		if serializer.is_valid():
+			serializer.save()
+			return Response(serializer.data)
+		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+	elif request.method == 'DELETE':
+		x.delete()
+		return Response(status=status.HTTP_204_NO_CONTENT)
+"""
+
+class NewsItemListAPI(generics.ListCreateAPIView):
+	queryset = NewsItem.objects.all()
+	serializer_class = NewsItemSerializer
+
+class NewsItemDetailAPI(generics.RetrieveUpdateDestroyAPIView):
+	queryset = NewsItem.objects.all()
+	serializer_class = NewsItemSerializer
+
+class EventListAPI(generics.ListCreateAPIView):
+	queryset = Event.objects.all()
+	serializer_class = EventSerializer
+
+class EventDetailAPI(generics.RetrieveUpdateDestroyAPIView):
+	queryset = Event.objects.all()
+	serializer_class = EventSerializer
 
 # INDEX
 

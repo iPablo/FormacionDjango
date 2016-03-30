@@ -1,7 +1,5 @@
-from django.forms import widgets
 from rest_framework import serializers
 from .models import NewsItem, Event
-from django.utils import timezone
 
 """
 class NewsItemSerializer(serializers.Serializer):
@@ -49,7 +47,6 @@ class EventSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Event
-		fields = ('id', 'title', 'description', 'start_date', 'end_date')
-		
+		fields = ('id', 'title', 'description', 'start_date', 'end_date')	
 			
 			
