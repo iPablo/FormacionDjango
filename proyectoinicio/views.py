@@ -12,6 +12,10 @@ from django.core.exceptions import ValidationError
 from django.views.generic import CreateView, DeleteView, DetailView, UpdateView
 import datetime
 from django.contrib.messages.views import SuccessMessageMixin
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import NewsItemSerializer
 
 def index(request):
 	return render(request, 'proyectoinicio/index.html')
@@ -173,3 +177,45 @@ class EventUpdate(SuccessMessageMixin, generic.UpdateView):
 	def get_success_url(self):
 		return reverse('proyectoinicio:index')
 
+
+@api_view(['GET' , 'POST'])
+def newsitem_list(request, format=None):
+	"""
+	Devuelve todas las noticias o las crea
+	"""
+	if request.method == 'GET':
+		noticias = NewsItem.objects.all()
+		serializador = NewsItemSerializer(noticias, many=True)
+		return Response(serializador.data)
+
+	elif request.method == 'POST':
+		serializer = NewsItemSerializer(data=request.data)
+		if serializer.is_valid():
+			serializer.save()
+			return Response(serializer.data, status=status.HTTP_201_CREATED)
+		return Response(serializer.errors, status=statis.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET' , 'PUT', 'DELETE'])
+def newsitem_detail(request, pk, format=None):
+	"""
+	Devuelve, actualiza, o borra un newsitem
+	"""
+	try:
+		noticia = NewsItem.objects.get(pk=pk)
+	except NewsItem.DoesNotExist:
+		return Response(status=status.HTTP_404_NOT_FOUND)
+
+	if request.method == 'GET':
+		serializador = NewsItemSerializer(noticia)
+		return Response(serializador.data)
+
+	elif request.method == 'PUT':
+		serializador = NewsItemSerializer(noticia, data=request.data)
+		if serializador.is_valid():
+			serializador.save()
+			return JSONResponse(serializador.data)
+		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+	elif request.method == 'DELETE':
+		noticia.delete()
+		return Response(status=status.HTTP_204_NO_CONTENT)

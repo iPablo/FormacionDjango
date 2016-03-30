@@ -1,5 +1,5 @@
 from django.conf.urls import url
-
+from rest_framework.urlpatterns import format_suffix_patterns
 from . import views
 
 app_name="proyectoinicio"
@@ -23,5 +23,8 @@ urlpatterns = [
     url(r'^eventos/crear$', views.EventCreate.as_view(), name='crearEvento'),
     url(r'^eventos/borrar/(?P<event_pk>[0-9]+)$', views.EventDelete.as_view(), name='borrarEvento'),
     url(r'^eventos/editar/(?P<event_pk>[0-9]+)$', views.EventUpdate.as_view(), name='editarEvento'),
+    url(r'^rest/$', views.newsitem_list),
+    url(r'^rest/(?P<pk>[0-9]+)/$', views.newsitem_detail),
 ]
 
+urlpatterns = format_suffix_patterns(urlpatterns)
