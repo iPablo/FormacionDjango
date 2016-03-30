@@ -1,0 +1,21 @@
+<h1>Noticias</h1>
+{% if news %}
+    <ul>
+    {% for item in news %}
+        <li><a href="{% url 'base:detail_news' item.id %}">{{ item.title }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No hay noticias disponibles</p>
+{% endif %}
+
+<h1>Eventos</h1>
+{% if events %}
+    <ul>
+    {% for item in events %}
+        <li><a href="{% url 'base:detail_events' item.id %}">{{ item.title }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No hay noticias disponibles</p>
+{% endif %}
