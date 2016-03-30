@@ -4,6 +4,42 @@ from .forms import NewsItemForm, EventForm
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.core.urlresolvers import reverse_lazy
 
+# API
+
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
+from .models import NewsItem, Event
+from .serializers import NewsItemSerializer, EventSerializer
+
+class JSONResponse(HttpResponse):
+
+	def __init__(self, data, **kwargs):
+		content = JSONRenderer().render(data)
+		kwargs['content_type'] = 'aplication/json'
+		super(JSONResponse, self).__init__(content, **kwargs)
+
+@csrf_exempt		
+def newsItem_list(request):
+	if request.method == "GET":
+		x = NewsItem.objects.all()
+		serializer = NewsItemSerializer(x, many=True)
+		return JSONResponse(serializer.data)
+	elif request.method == "POST":
+		data = JSONParser().parse(request)
+		serializer = NewsItemSerializer(data=data)
+		if serializer.is_valid():
+			serializer.save()
+			return JSONResponse(serializer.data, status=201)
+		return JSONResponse(serializer.errors, status=400)
+
+@csrf_exempt
+def function():
+	pass
+
+# INDEX
+
 def index(request):
 	return render(request, 'NoticiasEventos/index.html', {})
 

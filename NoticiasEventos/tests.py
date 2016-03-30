@@ -18,6 +18,18 @@ class NewsItemTestCase(TestCase):
 		form.save()
 		return NewsItem.objects.get(title="test title")
 
+	def test_index(self):
+		'''Comprueba el acceso a index'''
+		response = self.client.get(reverse('NoticiasEventos:index'))
+		self.assertEqual(response.status_code, 200)
+
+	def test_index_v1List(self):
+		'''Comprueba el acceso a v1List'''
+		response = self.client.get(reverse('NoticiasEventos:v1List'))
+		self.assertEqual(response.status_code, 200)
+		self.assertContains(response, "No items found.")
+		self.assertQuerysetEqual(response.context['result'], [])
+
 	def test_index_v2List(self):
 		'''Comprueba el acceso a v2List'''
 		response = self.client.get(reverse('NoticiasEventos:v2List'))
@@ -35,25 +47,26 @@ class NewsItemTestCase(TestCase):
 		x = NewsItem.objects.get(title="prueba title")
 		self.assertTrue(x)
 
-	def test_form_update_newsItem(self):
+	def test_form_update_newsItemV1(self):
 		'''Comprueba el acceso a v1Update'''
 		x = self.addNewsItem()
 		response = self.client.get(reverse('NoticiasEventos:v1Update', kwargs = {'pk': x.id}))
 		self.assertEqual(response.status_code, 200)
-		
+
+	def test_form_update_newsItemV2(self):
+		'''Comprueba el acceso a v1Update'''
+		x = self.addNewsItem()
+		response = self.client.get(reverse('NoticiasEventos:v2Update', kwargs = {'pk': x.id}))
+		self.assertEqual(response.status_code, 200)
 
 	def test_delete_v1(self):
 		'''Comprueba si se borra correctamente'''
 		x = self.addNewsItem()
 		self.client.get(reverse('NoticiasEventos:v1Delete', kwargs = {'pk':x.id}))
 		self.assertQuerysetEqual(NewsItem.objects.all(), [])
+	
 
-	def test_index_v1List(self):
-		'''Comprueba el acceso a v1List'''
-		response = self.client.get(reverse('NoticiasEventos:v1List'))
-		self.assertEqual(response.status_code, 200)
-		self.assertContains(response, "No items found.")
-		self.assertQuerysetEqual(response.context['result'], [])
+	
 
 	
 		
