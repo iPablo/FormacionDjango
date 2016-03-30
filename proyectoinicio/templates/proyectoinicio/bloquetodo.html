@@ -22,7 +22,7 @@
         		<h3>{{ noticia.title }}</h3>
         	</div>
         <div class="panel-footer" style="text-align: right;">
-        		<button class="btn btn-primary"><a href="" style="color: white">Ver mas</a></button>
+        		<a href="{%url 'proyectoinicio:ampliarVBC' noticia.id %}"><button class="btn btn-primary">Ver mas</button></a>
         	</div>
         </div>
    
@@ -41,7 +41,7 @@
         		<h3 style="text-align: center;">{{ evento.title }}</h3>
         	</div>
         	<div class="panel-footer" style="text-align: right;">
-        		<button class="btn btn-primary"><a href="" style="color: white">Ver mas</a></button>
+        		<a href="{%url 'proyectoinicio:ampliarEvento' evento.id %}"><button class="btn btn-primary">Ver mas</button></a>
         	</div>
         </div>
     {% endfor %}
@@ -50,6 +50,7 @@
     <p>¡No se ha devuelto ningún evento!</p>
 {% endif %}
 </div>
+<a href="{% url 'proyectoinicio:index'%} " style="color: white;"><button class="btn btn-warning">Volver</button></a>
 </div>
 </body>
 </html>

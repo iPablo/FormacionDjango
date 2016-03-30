@@ -32,6 +32,8 @@ class Event(BaseNews):
 	start_date= models.DateTimeField('Fecha de inicio')
 	end_date=models.DateTimeField('Fecha de fin')
 	def dameDuracion(self): #Devuelve la duracion en dias del evento en cuestion
+		if self.end_date<self.start_date:
+			self.end_date=self.start_date
 		diferencia = self.end_date - self.start_date
 		return diferencia.days
 

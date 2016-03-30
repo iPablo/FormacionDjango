@@ -3,6 +3,8 @@ from .models import Base, BaseNews, NewsItem, Event
 from django.core.urlresolvers import reverse
 import datetime
 from django.utils import timezone
+from django.core.exceptions import ValidationError
+
 
 class NewsItemMethodTests(TestCase):
 
@@ -38,18 +40,18 @@ class EventMethodTests(TestCase):
 
 		fecha_inicio=timezone.now()+datetime.timedelta(days=1)
 		fecha_fin=timezone.now()+datetime.timedelta(days=1)
-		fecha_resultado=fecha_inicio-fecha_fin
-		self.assertEqual(fecha_resultado.days, 0)
+		evento = Event(start_date=fecha_inicio, end_date=fecha_fin)
+		self.assertEqual(evento.dameDuracion(), 0)
 
-	def test_dameDuracion_con_fecha_de_fin_antes
+	def test_dameDuracion_con_fecha_de_fin_antes(self):
 		"""
 		Como es obvio, la fecha de fin del evento no puede ser
 		antes que la fecha de inicio. 
 		"""
 		fecha_inicio=timezone.now()+datetime.timedelta(days=1)
 		fecha_fin=timezone.now()
-		fecha_resultado=fecha_inicio-fecha_fin
-		self.assertEqual(fecha_resultado.days,-1)
+		evento = Event(start_date=fecha_inicio, end_date=fecha_fin)
+		self.assertNotEqual(evento.dameDuracion(), -1)
 
 def create_newsitemP(titulo, descripcion, dias):
 	"""
@@ -59,6 +61,15 @@ def create_newsitemP(titulo, descripcion, dias):
 	"""
 	fecha = timezone.now() - datetime.timedelta(days=dias)
 	return NewsItem.objects.create(title=titulo, description=descripcion, publish_date=fecha)
+
+def crear_evento(titulo, descripcion):
+	"""
+	Una simple funcion para crear eventos de cara al testeo.
+	Las fechas seran automaticas (7 dias a partir del actual)
+	"""
+	fechainicio= timezone.now()
+	fechafin=timezone.now()+datetime.timedelta(days=7)
+	return Event.objects.create(title=titulo, description=descripcion, start_date=fechainicio, end_date=fechafin)
 
 class NewsitemViewTests(TestCase):
 	def test_index_view_sin_noticias(self):
@@ -106,5 +117,119 @@ class NewsitemViewTests(TestCase):
 		"""
 		response = self.client.get(reverse('proyectoinicio:ampliar' , kwargs={'noticia_pk' : 11010101010}))
 		self.assertEqual(response.status_code, 404)
+
+	def test_vista_borrado(self):
+		"""
+		La ventana de borrar tiene que tener una confirmacion.
+		"""
+		noticia = create_newsitemP(titulo="prueba" , descripcion="prueba de pasado", dias=3)
+		response = self.client.get(reverse('proyectoinicio:borrar', kwargs={'noticia_pk' : noticia.id}))
+		self.assertContains(response, "Se ha borrado la noticia")
+
+	def test_vista_actualizada(self):
+		"""
+		La vista de actualizacion tiene que contener una noticia que le pasemos.
+		"""
+		noticia = create_newsitemP(titulo="prueba" , descripcion="prueba de pasado", dias=3)
+		response = self.client.get(reverse('proyectoinicio:editar', kwargs={'noticia_pk' : noticia.id}))
+		self.assertContains(response, noticia)	
+
+	def test_vista_crear(self):
+		"""
+		Al principio nos tendria que llevar a una pagina que contenga un formulario en
+		el cual crearemos las noticias, para de ahi despues crear la noticia per se en
+		la base de datos
+		"""
+		response = self.client.get(reverse('proyectoinicio:crearNoticia'))
+		self.assertContains(response, 'form') #que contenga un formulario, es todo
+
+	def test_VBC_vista(self):
+		"""
+		Si accedemos a la vista basada en clases, lo primero que tendriamos que tener
+		en la respuesta seria un set con la query de todos los objetos NewsItem, es
+		decir, no tendria que salir el mensajito de que no hay noticias
+		"""
+
+		response = self.client.get(reverse('proyectoinicio:noticiasVBC'))
+		self.assertNotEqual(response, 'No hay noticias disponibles')
+
+	def test_VBC_detalle(self):
+		"""
+		Es la vista por detalles. Para que sea correcta tenemos que tener una noticia dentro y
+		per se tenemos que tener un codigo de status 200
+		"""
+		noticia = create_newsitemP(titulo="prueba" , descripcion="prueba de pasado", dias=3)
+		response = self.client.get(reverse('proyectoinicio:ampliarVBC', kwargs={'noticia_pk' : noticia.id}))
+		self.assertEqual(response.status_code, 200)
+		self.assertContains(response, noticia)
+
+	def test_VBC_borrado(self):
+		"""
+		Prueba de la vista basada en clases del borrado. Al nosotros borrar la pagina
+		tiene que redirigirnos a una ventana de confirmacion, veamos si lo hace bien
+		"""
+		noticia = create_newsitemP(titulo="prueba" , descripcion="prueba de pasado", dias=3)
+		response = self.client.get(reverse('proyectoinicio:borrarVBC', kwargs={'noticia_pk' : noticia.id}))
+		self.assertContains(response, "seguro")
+
+	def test_VBC_creado(self):
+		"""
+		Para crear un formulario de creacion de noticias, tenemos que ir a una pagina
+		en la que nos compruebe si efectivamente existe.
+		"""
+		response = self.client.get(reverse('proyectoinicio:crearVBC'))
+		self.assertEqual(response.status_code, 200)
+		self.assertContains(response, "form")
+
+	def test_VBC_editado(self):
+		"""
+		Al igual que antes, tenemos que tener tanto un formulario existente
+		como el codigo.
+		"""
+		response = self.client.get(reverse('proyectoinicio:crearVBC'))
+		self.assertEqual(response.status_code, 200)
+		self.assertContains(response, "form")
+
+	def test_evento_vista(self):
+		"""
+		Esto es para la vista de eventos. Tendriamos que acceder, pero al devolvernos
+		algun evento, la respuesta no puede ser la de no hay eventos disponibles
+		"""
+		response = self.client.get(reverse('proyectoinicio:eventos'))
+		self.assertEqual(response.status_code, 200)
+		self.assertNotContains(response, 'No hay eventos disponibles')
+
+	def test_evento_detalle(self):
+		"""
+		Al coger detalle de un evento, la respuesta en la plantilla de Vista Ampliada
+		no puede ser "Ese evento no existe"
+		"""
+		evento = crear_evento(titulo="prueba" , descripcion="prueba de evento")
+		response = self.client.get(reverse('proyectoinicio:ampliarEvento', kwargs={'pk' : evento.id}))
+		self.assertEqual(response.status_code, 200)
+		self.assertNotContains(response, 'Ese evento no existe')
+
+	def test_evento_borrar(self):
+		"""
+		Si borramos un evento nos tiene que redirigir a una pagina de confirmacion si
+		lo hacemos bien.
+		"""
+		evento = crear_evento(titulo="prueba" , descripcion="prueba de evento")
+		response = self.client.get(reverse('proyectoinicio:borrarEvento', kwargs={'event_pk' : evento.id}))
+		self.assertEqual(response.status_code, 200)
+		self.assertContains(response, 'seguro')
+
+	def test_evento_crear(self):
+		"""
+		Si creamos un evento tendriamos que tener un formulario que existe.
+		"""
+		response = self.client.get(reverse('proyectoinicio:crearEvento'))
+		self.assertEqual(response.status_code, 200)
+		self.assertContains(response, "form")
+
+
+
+
+
 
 
