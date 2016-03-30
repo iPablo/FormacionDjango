@@ -1,0 +1,16 @@
+from django.conf.urls import url
+from .views import (
+        NewsItemList,
+        NewsItemDetail,
+        NewsItemCreation,
+        NewsItemUpdate,
+        NewsItemDelete
+    )
+urlpatterns = [
+	url(r'^$', views.blog_list),
+        url(r'^$', NewsItemList.as_view(), name='list'),
+        url(r'^(?P<pk>\d+)$', NewsItemDetail.as_view(), name='detail'),
+        url(r'^nuevo$', NewsItemCreation.as_view(), name='new'),
+        url(r'^editar/(?P<pk>\d+)$', NewsItemUpdate.as_view(), name='edit'),
+        url(r'^borrar/(?P<pk>\d+)$', NewsItemDelete.as_view(), name='delete'),
+]

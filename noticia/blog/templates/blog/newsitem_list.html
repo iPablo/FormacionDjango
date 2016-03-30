@@ -1,0 +1,25 @@
+{% load staticfiles %}
+<html>
+<head>
+  <title>Noticias</title>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+  <link href="http://fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="{% static 'css/blog.css' %}">
+</head>
+<body>
+  <div class="page-header">
+    <a href="{% url 'blog:newnews' %}" class="top-menu"><span class="glyphicon glyphicon-plus">Noticias</span></a>
+    <h1>{{ newsitem.title }}</h1>
+      <h1>Noticias</h1>
+  </div>
+   {% for post in NewsItem %}
+       <div>
+           <h1><a href="{% url 'blog:detailnews' post.id %}">{{ post.title }}</a></h1>
+           <p>{{ post.description}}</p>
+           <p>Publicación de la noticia: {{ post.publish_date }}</p>
+  </div>
+   {% endfor %}
+  <a href="{% url 'blog:index' %}">Regresar</a>
+</body>
+</html>

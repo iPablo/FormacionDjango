@@ -1,0 +1,32 @@
+{% load staticfiles %}
+<html>
+<head>
+  <title>Noticias</title>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+  <link href="http://fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="{% static 'css/blog.css' %}">
+</head>
+<body>
+  <div class="page-header">
+      <h1><a href="/">Noticias Y Eventos</a></h1>
+  </div>
+<p>hola</p>
+   {% for post in NewsItem %}
+       <div>
+           <h1><a href="">{{ post.title }}</a></h1>
+           <p>{{ post.description}}</p>
+           <p>Publicación de la noticia: {{ post.publish_date }}</p>
+       </div>
+   {% endfor %}
+
+   {% for event in Event %}
+       <div>
+           <h1><a href="">{{ event.title }}</a></h1>
+           <p>{{ event.description}}</p>
+           <p>Comienzo del evento: {{ event.start_date }}</p>
+	   <p>Finalización del evento: {{ event.start_date }}</p>
+       </div>
+   {% endfor %}
+</body>
+</html>

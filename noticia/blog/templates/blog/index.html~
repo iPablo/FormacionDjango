@@ -1,0 +1,13 @@
+<html>
+<head>
+  <title>Proyecto de iniciación</title>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="{% static 'css/blog.css' %}">
+</head>
+<body>
+<p>  <a href="newsitem_list.html">Noticias</a> </p>
+<p>  <a href="event_list.html">Eventos</a> </p>
+<p>  <a href="both_list.html">Noticias y Eventos</a> </p>
+</body>
+</html>
