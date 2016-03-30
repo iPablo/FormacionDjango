@@ -12,10 +12,8 @@ from django.core.exceptions import ValidationError
 from django.views.generic import CreateView, DeleteView, DetailView, UpdateView
 import datetime
 from django.contrib.messages.views import SuccessMessageMixin
-from rest_framework import status
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from .serializers import NewsItemSerializer
+from rest_framework import generics
+from .serializers import NewsItemSerializer , EventSerializer
 
 def index(request):
 	return render(request, 'proyectoinicio/index.html')
@@ -178,44 +176,30 @@ class EventUpdate(SuccessMessageMixin, generic.UpdateView):
 		return reverse('proyectoinicio:index')
 
 
-@api_view(['GET' , 'POST'])
-def newsitem_list(request, format=None):
+class NewsItemList(generics.ListCreateAPIView):
 	"""
-	Devuelve todas las noticias o las crea
+	Lista todas las noticias, o las crea.
 	"""
-	if request.method == 'GET':
-		noticias = NewsItem.objects.all()
-		serializador = NewsItemSerializer(noticias, many=True)
-		return Response(serializador.data)
+	queryset=NewsItem.objects.all()
+	serializer_class=NewsItemSerializer
 
-	elif request.method == 'POST':
-		serializer = NewsItemSerializer(data=request.data)
-		if serializer.is_valid():
-			serializer.save()
-			return Response(serializer.data, status=status.HTTP_201_CREATED)
-		return Response(serializer.errors, status=statis.HTTP_400_BAD_REQUEST)
-
-@api_view(['GET' , 'PUT', 'DELETE'])
-def newsitem_detail(request, pk, format=None):
+class NewsItemDetail(generics.RetrieveUpdateDestroyAPIView):
 	"""
-	Devuelve, actualiza, o borra un newsitem
+	Devuelve, actualiza o borra una instancia de NewsItem
 	"""
-	try:
-		noticia = NewsItem.objects.get(pk=pk)
-	except NewsItem.DoesNotExist:
-		return Response(status=status.HTTP_404_NOT_FOUND)
+	queryset = NewsItem.objects.all()
+	serializer_class=NewsItemSerializer
 
-	if request.method == 'GET':
-		serializador = NewsItemSerializer(noticia)
-		return Response(serializador.data)
+class EventRESTList(generics.ListCreateAPIView):
+	"""
+	Lista todas los eventos, o los crea.
+	"""
+	queryset=Event.objects.all()
+	serializer_class=EventSerializer
 
-	elif request.method == 'PUT':
-		serializador = NewsItemSerializer(noticia, data=request.data)
-		if serializador.is_valid():
-			serializador.save()
-			return JSONResponse(serializador.data)
-		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-	elif request.method == 'DELETE':
-		noticia.delete()
-		return Response(status=status.HTTP_204_NO_CONTENT)
+class EventRESTDetail(generics.RetrieveUpdateDestroyAPIView):
+	"""
+	Devuelve, actualiza o borra una instancia de Event
+	"""
+	queryset = Event.objects.all()
+	serializer_class=EventSerializer
