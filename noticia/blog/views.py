@@ -11,14 +11,7 @@ from django.shortcuts import render
 from django.utils import timezone
 from .models import Event
 from django.shortcuts import redirect, get_object_or_404
-from django.forms import ModelForm
-
-
-class NewsItemForm(ModelForm):
-    class Meta:
-        model = NewsItem
-        fields = ['title', 'description', 'publish_date']
-
+from .forms import NewsItemForm
 
 def newsitem_list1(request, template_name='blog/newsitem_list.html'):
     posts = NewsItem.objects.all()
