@@ -29,6 +29,7 @@
         <save.Video.For.Passed>false</save.Video.For.Passed>
         
         <!-- Parameters for selenium -->
+        <!-- Se va a cambiar la URL. Es la de por defecto (www.google.es)-->
         <environment.url>http://www.google.es</environment.url>
         <env.context></env.context>
 	</properties>

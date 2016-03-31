@@ -85,4 +85,5 @@ public class GoogleMainPage extends BasePageObject {
                 + "]- End clickOnPage method");
         return new EmergyaMainPage(driver);
     }
+
 }
