@@ -30,7 +30,7 @@
         
         <!-- Parameters for selenium -->
         <!-- Se va a cambiar la URL. Es la de por defecto (www.google.es)-->
-        <environment.url>http://www.google.es</environment.url>
+        <environment.url>http://localhost:8000/</environment.url>
         <env.context></env.context>
 	</properties>
 
