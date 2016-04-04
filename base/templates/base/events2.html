@@ -1,0 +1,13 @@
+<h1>Eventos (Clases)</h1>
+{% block content %}
+    <ul>
+        {% for item in object_list %}
+            <li><a href="{% url 'base:EventsDetail' item.id %}">{{ item.title }}</a><br/>
+                <a href="{% url 'base:EventsUpdate' item.id %}">Editar</a><br/>
+                <a href="{% url 'base:EventsDelete' item.id %}">Borrar</a>
+            </li>
+            <br/>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'base:EventsCreate' %}"><button>Nuevo</button></a>
+{% endblock %}
