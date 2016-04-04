@@ -1,6 +1,7 @@
 package com.emergya.pageObjects;
 
 import org.apache.log4j.Logger;
+import org.openqa.selenium.By;
 
 import com.emergya.drivers.EmergyaWebDriver;
 
@@ -44,4 +45,31 @@ public class EmergyaMainPage extends BasePageObject {
     }
 
     // Page object methods
+    /*
+     * This method search contact tab on Emergya main page.
+     */
+    public EmergyaMainPage clickOnContactEmergyaPage() {
+        log.info("[log-pageObjects]" + this.getClass().getSimpleName()
+                + "]- Start clickOnPage method");
+        String xPathSelector = ".//*[@id='block-menu-menu-cabecera']/ul/li[3]/a/span";
+        driver.clickIfExists(By.xpath(xPathSelector));
+
+        log.info("[log-pageObjects]" + this.getClass().getSimpleName()
+                + "]- End clickOnPage method");
+        return new EmergyaMainPage(driver);
+    }
+
+    /*
+     * This method search Work with us in contact Emergya main page.
+     */
+    public EmergyaMainPage clickOnWorkEmergyaPage() {
+        log.info("[log-pageObjects]" + this.getClass().getSimpleName()
+                + "]- Start clickOnPage method");
+        String xPathSelector = ".//*[@id='block-menu-menu-cabecera']/ul/li[1]/a/span";
+        driver.clickIfExists(By.xpath(xPathSelector));
+
+        log.info("[log-pageObjects]" + this.getClass().getSimpleName()
+                + "]- End clickOnPage method");
+        return new EmergyaMainPage(driver);
+    }
 }

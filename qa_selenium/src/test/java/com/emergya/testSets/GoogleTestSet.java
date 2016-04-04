@@ -140,16 +140,16 @@ public class GoogleTestSet extends DefaultTestSet {
             isEmergyaLogoDisplayed();
 
             // TODO: Remove the following line when you complete the test
-            assertTrue("Developing test", false);
+            // assertTrue("Developing test", false);
 
-            // Access to the 'Contacto' page
-
+            // Access to the 'Contact' page
+            emergyaMainPage = emergyaMainPage.clickOnContactEmergyaPage();
             // Check that the address is displayed
-
+            isAddressEmergyaDisplayed();
             // Access to the 'Trabaja con nosotros' page
-
+            emergyaMainPage = emergyaMainPage.clickOnWorkEmergyaPage();
             // Check '¿QUÉ OFRECEMOS?' section is displayed
-
+            isOfferDisplayed();
         } finally {
             // Steps to clear the stage (Post steps)
         }
@@ -209,7 +209,7 @@ public class GoogleTestSet extends DefaultTestSet {
         if (googleMainPage == null) {
             googleMainPage = new GoogleMainPage(driver);
         }
-              
+
         /* Check by Name */
         assertTrue("The search button isn't displayed, it should be displayed",
                 googleMainPage.isElementVisibleByName("searchButton"));
@@ -247,4 +247,27 @@ public class GoogleTestSet extends DefaultTestSet {
         assertTrue("The logo isn't displayed, it should be displayed",
                 emergyaMainPage.isElementVisibleByXPath("imgLogoEmergya"));
     }
+
+    /**
+     * This assertion check if the address of Emergya Sevilla is displayed
+     */
+    public void isAddressEmergyaDisplayed() {
+        if (emergyaMainPage == null) {
+            emergyaMainPage = new EmergyaMainPage(driver);
+        }
+        assertTrue("The address isn't displayed, it should be displayed",
+                emergyaMainPage.isElementVisibleByXPath("imgAddressEmergya"));
+    }
+
+    /**
+     * This assertion check if the field of offer is displayed
+     */
+    public void isOfferDisplayed() {
+        if (emergyaMainPage == null) {
+            emergyaMainPage = new EmergyaMainPage(driver);
+        }
+        assertTrue("The offer isn't displayed, it should be displayed",
+                emergyaMainPage.isElementVisibleByXPath("imgOfferEmergya"));
+    }
+
 }
