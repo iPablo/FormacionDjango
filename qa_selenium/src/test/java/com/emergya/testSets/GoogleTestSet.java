@@ -140,15 +140,19 @@ public class GoogleTestSet extends DefaultTestSet {
             isEmergyaLogoDisplayed();
 
             // TODO: Remove the following line when you complete the test
-            assertTrue("Developing test", false);
+            // assertTrue("Developing test", false);
 
             // Access to the 'Contacto' page
+            emergyaMainPage = emergyaMainPage.clickOnEmergyaPageContact();
 
             // Check that the address is displayed
+            isEmergyaAddressDisplayed();
 
             // Access to the 'Trabaja con nosotros' page
+            emergyaMainPage = emergyaMainPage.clickOnEmergyaPageWork();
 
             // Check '¿QUÉ OFRECEMOS?' section is displayed
+            isEmergyaOfferDisplayed();
 
         } finally {
             // Steps to clear the stage (Post steps)
@@ -209,7 +213,7 @@ public class GoogleTestSet extends DefaultTestSet {
         if (googleMainPage == null) {
             googleMainPage = new GoogleMainPage(driver);
         }
-              
+
         /* Check by Name */
         assertTrue("The search button isn't displayed, it should be displayed",
                 googleMainPage.isElementVisibleByName("searchButton"));
@@ -246,5 +250,21 @@ public class GoogleTestSet extends DefaultTestSet {
         }
         assertTrue("The logo isn't displayed, it should be displayed",
                 emergyaMainPage.isElementVisibleByXPath("imgLogoEmergya"));
+    }
+
+    public void isEmergyaAddressDisplayed() {
+        if (emergyaMainPage == null) {
+            emergyaMainPage = new EmergyaMainPage(driver);
+        }
+        assertTrue("The address isn't displayed, it should be displayed",
+                emergyaMainPage.isElementVisibleByXPath("address"));
+    }
+
+    public void isEmergyaOfferDisplayed() {
+        if (emergyaMainPage == null) {
+            emergyaMainPage = new EmergyaMainPage(driver);
+        }
+        assertTrue("The offer isn't displayed, it should be displayed",
+                emergyaMainPage.isElementVisibleByXPath("offer"));
     }
 }
