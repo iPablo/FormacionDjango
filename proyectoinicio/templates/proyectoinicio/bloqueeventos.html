@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Eventos Django</title>
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+<div class="jumbotron">
+	<h1 style="color: #A1D490; text-align: center; text-shadow: 2px 2px green">Eventos Django</h1>
+</div>
+<div class="panel panel-primary">
+<div class="panel-body" style="text-align: center;">
+        <p>¿Quieres crear un evento? Pulsa <a href="{% url 'proyectoinicio:crearEvento' %}">¡aquí!</a></p>
+    </div>
+    </div>
+
+{% if bloque_eventos %}
+<div class="panel-group">
+    {% for evento in bloque_eventos %}
+        <div class="panel panel-success">
+        	<div class="panel-heading">
+        		<h3 style="text-align: center;">{{ evento.title }}</h3>
+        	</div>
+        	<div class="panel-footer" style="text-align: right;">
+        		<a href="{%url 'proyectoinicio:ampliarEvento' evento.id %}"><button class="btn btn-success">Ver mas </button></a> 
+        	</div>
+        </div>
+    {% endfor %}
+    </div>
+{% else %}
+    <p>¡No se ha devuelto ningún evento!</p>
+{% endif %}
+<a href="{% url 'proyectoinicio:index'%} " style="color: white;"><button class="btn btn-warning">Volver</button></a>
+</div>
+
+
+</body>
+</html>

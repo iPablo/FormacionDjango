@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Evento ampliado</title>
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+<div class="jumbotron">
+	<h1 style="color: #A1D490; text-align: center; text-shadow: 2px 2px green">Ampliación</h1>
+</div>
+{% if event %}
+        <div class="panel {% if noticia.ha_pasado %}
+                            panel-warning
+                            {% else %}
+                            panel-success
+                        {% endif %}
+                        ">
+        	<div class="panel-heading">
+        		<h3>{{ event.title }}</h3>
+        	</div>
+            <div class="panel-body">
+                <p>{{ event.description }}</p>
+                <br />
+                <p>Fecha de inicio: {{ event.start_date }}</p>
+                <p>Fecha de fin: {{ event.end_date }}</p>
+            </div>
+        	<div class="panel-footer" style="text-align: right;">
+                <p><b><u>Duración:</u></b> {{ event.dameDuracion }} dias</p>
+        		<a href="{% url 'proyectoinicio:eventos'%} " style="color: white"><button class="btn btn-primary">Volver</button></a>
+        	</div>
+        </div>
+        <div class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header"><a class="navbar-brand" href="#">Operaciones</a></div>
+            <ul class="nav navbar-nav">
+                <li><a href="{% url 'proyectoinicio:editarEvento' event.id %}">Editar</a></li>
+                <li><a href="{% url 'proyectoinicio:borrarEvento' event.id %}">Borrar</a></li>
+            </ul>
+        </div>
+        </div>
+{% else %}
+    <p>Ese evento no existe</p>
+{% endif %}
+</div>
+
+</body>
+</html>
