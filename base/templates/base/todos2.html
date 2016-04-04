@@ -1,0 +1,14 @@
+<h1>Todos (Clases)</h1>
+<h2>Noticias</h2>
+    <ul>
+        {% for item in object_list %}
+            <li><a href="{% url 'base:NewsItemDetail' item.id %}">{{ item.title }}</a></li>
+        {% endfor %}
+    </ul>
+
+<h2>Eventos</h2>
+    <ul>
+        {% for item in event_list %}
+            <li><a href="{% url 'base:EventsDetail' item.id %}">{{ item.title }}</li>
+        {% endfor %}
+    </ul>

@@ -9,5 +9,6 @@
     </ul>
     <a href="{% url 'base:create_event' %}"><button>Nuevo</button></a>
 {% else %}
-    <p>No hay noticias disponibles</p>
+    <p>No hay Eventos disponibles</p>
+    <a href="{% url 'base:create_event' %}"><button>Nuevo</button></a>
 {% endif %}
