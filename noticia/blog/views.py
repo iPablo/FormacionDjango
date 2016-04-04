@@ -75,6 +75,7 @@ class NewsItemCreation(CreateView):
         #ields = ['title', 'description', 'publish_date']
         form_class = NewsItemForm
 
+
 class NewsItemUpdate(UpdateView):
         model = NewsItem
         success_url = reverse_lazy('blog:noticias')

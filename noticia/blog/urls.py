@@ -18,7 +18,7 @@ urlpatterns = [
         url(r'^todo/$', views.todo, name='todo'),
         url(r'^noticias/$', views.newsitem_list, name='noticias'),
     #    url(r'^noticias/$', NewsItemList.as_view(), name='listnews'),
-        url(r'^noticias/(?P<pk>[0-9]+)/$', NewsItemDetail.as_view(), name='detailnews'),
+        url(r'^noticias/v2/(?P<pk>[0-9]+)/$', NewsItemDetail.as_view(), name='detailnews'),
         url(r'^noticias/v2/nuevo$', NewsItemCreation.as_view(), name='newnews'),
         url(r'^noticias/v2/(?P<pk>[0-9]+)/editar/$', NewsItemUpdate.as_view(), name='editnews'),
         url(r'^noticias/v2/borrar/(?P<pk>[0-9]+)/$', NewsItemDelete.as_view(), name='deletenews'),
@@ -30,6 +30,7 @@ urlpatterns = [
         url(r'^eventos/borrar/(?P<pk>[0-9]+)/$', EventDelete.as_view(), name='deleteevent'),
 #noticias v1
         url(r'^noticias/v1/nuevo$', views.newsitem_create, name='1newnews'),
+        url(r'^noticias/v1/(?P<pk>[0-9]+)/$', NewsItemDetail.as_view(), name='1detailnews'),
         url(r'^noticias/v1/(?P<pk>[0-9]+)/editar$', views.newsitem_update, name='v1editnews'),
-        url(r'^noticias/v1/(?P<pk>[0-9]+)/borrar$', views.newsitem_delete, name='v1deletenews'),
+        url(r'^noticias/v1/borrar/(?P<pk>[0-9]+)/$', views.newsitem_delete, name='v1deletenews'),
 ]

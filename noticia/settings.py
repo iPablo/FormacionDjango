@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'noticia.blog',
+    'django_nose',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -52,7 +53,10 @@ MIDDLEWARE_CLASSES = [
 ]
 
 ROOT_URLCONF = 'noticia.urls'
-
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+NOSE_ARGS = [
+    '--with-coverage',
+]
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
