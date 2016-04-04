@@ -71,6 +71,7 @@ public class AdministracionTestSet extends DefaultTestSet {
             /**
              * This logs us as the administrator
              */
+            Thread.sleep(1000);
             administracionPage.loginAsAdmin();
             /**
              * This assertion checks if the main title of the page is displayed.
