@@ -11,23 +11,23 @@
 	<div class="jumbotron">
 		<h1 style="color: #A1D490; text-align: center; text-shadow: 2px 2px green">Crear noticia nueva</h1>
 	</div>
-	<form action="{%url 'proyectoinicio:crear'%}" method= "post" class="form-horizontal" role="form">
-  {% csrf_token %} 
-    <div class="form-group">
-        <label class="control-label" for="title">Titulo nuevo:</label>
-        <input id= "title" type="text" name="title" placeholder="Describe un titulo"/>
-    </div>
-     <div class="form-group">
-        <label class="control-label" for="description">Descripción:</label>
-        <input id= "description" type="text" name="description" placeholder="La noticia que quieras dar"/>
-    </div>
-      {% if mensaje_error %}
-        <h6 style="color: red;">{{  mensaje_error }}, recuerda respetar los formatos.</h6>
-      {% endif %}
-     <div class="form-group">
-        <input type="submit" value="Crear nueva noticia" class="btn btn-success"/> 
-    </div>
+	{% if messages %}
+		{% for message in messages %}
+		<h3{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+			{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Importante: {% endif %}
+			{{ message }}
+		</h3>
+		{% endfor %}
+	{% endif %}
+
+<form method="post">
+
+  {% csrf_token %}
+  {{form.as_p}}
+  <input type="submit" class="btn btn-success"/>
   </form>
+
+
 <div style="text-align: right;"><a href="{% url 'proyectoinicio:noticias'%} " style="color: white;"><button class="btn btn-warning">Volver</button></a></div>
 </div>
 </body>

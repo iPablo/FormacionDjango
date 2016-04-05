@@ -11,32 +11,22 @@
 <div class="jumbotron">
 	<h1 style="color: #A1D490; text-align: center; text-shadow: 2px 2px green">Edición</h1>
 </div>
-{% if noticia %}
-  <form action="{%url 'proyectoinicio:confirmar' noticia.id%}" method= "post" class="form-horizontal" role="form">
-  {% csrf_token %} 
-    <div class="form-group">
-        <label class="control-label" for="title">Titulo:</label>
-        <input id= "title" type="text" name="title" placeholder="{{noticia.title}}"/>
-    </div>
-     <div class="form-group">
-        <label class="control-label" for="description">Descripción:</label>
-        <input id= "description" type="text" name="description" placeholder="{{noticia.description}}"/>
-    </div>
-     <div class="form-group">
-        <label class="control-label" for="fecha">Fecha de publicación:</label>
-        <input id= "fecha" type="datetime" name="fecha" placeholder="YYYY-MM-DD HH:MM"/>
-    </div>
-      {% if mensaje_error %}
-        <h6 style="color: red;">{{  mensaje_error }}, recuerda respetar los formatos.</h6>
-      {% endif %}
-     <div class="form-group">
-        <input type="submit" value="Editar" class="btn btn-success"/> 
-    </div>
+{% if messages %}
+	{% for message in messages %}
+	<h3{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+		{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Importante: {% endif %}
+		{{ message }}
+	</h3>
+	{% endfor %}
+{% endif %}
+
+  <form method= "post" class="form-horizontal" role="form">
+  {% csrf_token %}
+	{{form.as_p}}
+	<input type="submit" class="btn btn-success"/>
   </form>
   <div style="text-align: right;"><a href="{% url 'proyectoinicio:index'%} " style="color: white;"><button class="btn btn-warning">Volver</button></a></div>
-{% else %}
-    <p>No se ha podido devolver la noticia en cuestión. Contacte al administrador.</p>
-{% endif %}
+
 </div>
 </body>
 </html>

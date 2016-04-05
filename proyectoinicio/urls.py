@@ -2,7 +2,7 @@ from django.conf.urls import url
 from rest_framework.urlpatterns import format_suffix_patterns
 from . import views
 
-app_name="proyectoinicio"
+app_name = "proyectoinicio"
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^v1/$', views.dameNoticias, name='noticias'),
@@ -13,7 +13,6 @@ urlpatterns = [
     url(r'^v1/editar/(?P<noticia_pk>[0-9]+)$', views.editaNoticia, name='editar'),
     url(r'^v1/confirmar/(?P<noticia_pk>[0-9]+)$', views.editar, name='confirmar'),
     url(r'^v1/crear/$', views.creaNoticia, name='crearNoticia'),
-    url(r'^v1/creada/$', views.crear, name='crear'),
     url(r'^v2/$', views.NoticiasView.as_view(), name='noticiasVBC'),
     url(r'^v2/ampliar/(?P<noticia_pk>[0-9]+)$', views.NoticiasDetalleView.as_view(), name='ampliarVBC'),
     url(r'^v2/ampliar/borrar/(?P<noticia_pk>[0-9]+)$', views.NoticiasDelete.as_view(), name='borrarVBC'),
@@ -28,5 +27,4 @@ urlpatterns = [
     url(r'^api/eventos/$', views.EventRESTList.as_view()),
     url(r'^api/eventos/(?P<pk>[0-9]+)/$', views.EventRESTDetail.as_view()),
 ]
-
 urlpatterns = format_suffix_patterns(urlpatterns)
