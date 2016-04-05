@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from . import views
-from NoticiasEventos.views import v2List, v2Create, v2Update, v2Delete, EventList, EventCreate, EventUpdate, EventDelete
+from NoticiasEventos.views import v2List, v2Create, v2Update, v2Delete, \
+ EventList, EventCreate, EventUpdate, EventDelete
 from rest_framework.urlpatterns import format_suffix_patterns
 
 
@@ -30,7 +31,8 @@ urlpatterns = [
     # Api
     url(r'^apiNewsItem/$', views.NewsItemListAPI.as_view(),
         name="apiNewsItem"),
-    url(r'^apiNewsItem/(?P<pk>[0-9]+)/$', views.NewsItemDetailAPI.as_view()),
+    url(r'^apiNewsItem/(?P<pk>[0-9]+)/$', views.NewsItemDetailAPI.as_view(),
+        name="apiNewsItemDetail"),
 
     url(r'^apiEvent/$', views.EventListAPI.as_view(), name="apiEvent"),
     url(r'^apiEvent/(?P<pk>[0-9]+)/$', views.EventDetailAPI.as_view()),
