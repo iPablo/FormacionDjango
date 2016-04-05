@@ -5,7 +5,6 @@ from django.shortcuts import render, get_object_or_404
 from .models import Event, NewsItem
 from django.core.urlresolvers import reverse
 from django.views import generic
-from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
@@ -23,12 +22,6 @@ def dameNoticias(request):
 	bloque_noticias = NewsItem.objects.order_by('-publish_date')
 	contexto = {'bloque_noticias': bloque_noticias}
 	return render(request, 'proyectoinicio/bloquenoticias.html', contexto)
-
-
-def dameEventos(request):
-	bloque_eventos = Event.objects.order_by('-start_date')
-	contexto = {'bloque_eventos': bloque_eventos}
-	return render(request, 'proyectoinicio/bloqueeventos.html', contexto)
 
 
 def dameTodo(request):
@@ -52,7 +45,7 @@ def vistaNoticia(request, noticia_pk):
 def borraNoticia(request, noticia_pk):
 	noticia = get_object_or_404(NewsItem, pk=noticia_pk)
 	noticia.delete()
-	messages.add_message(request, messages.SUCCESS, 'Se ha borrado la noticia con exito')
+	messages.add_message(request, messages.SUCCESS, 'Se ha borrado la noticia con exito', fail_silently=True)
 	return redirect('proyectoinicio:index')
 
 
@@ -61,46 +54,18 @@ def editaNoticia(request, noticia_pk):
 	form = NewsItemForm(request.POST or None, instance=noticia)
 	if form.is_valid():
 		form.save()
-		messages.add_message(request, messages.SUCCESS, 'Se ha editado correctamente')
+		messages.add_message(request, messages.SUCCESS, 'Se ha editado correctamente', fail_silently=True)
 		return redirect('proyectoinicio:index')
 	return render(request, 'proyectoinicio/vistaEdicion.html', {'form': form})
-
-
-def editar(request, noticia_pk):
-	try:
-		noticia = get_object_or_404(NewsItem, pk=noticia_pk)
-		noticia.title = request.POST['title']
-		noticia.description = request.POST['description']
-		noticia.publish_date = request.POST['fecha']
-		noticia.save()
-		messages.add_message(request, messages.SUCCESS, 'Se ha editado la noticia correctamente')
-		return redirect('proyectoinicio:index')
-	except (ValidationError, ValueError, NameError):
-		messages.add_message(request, messages.ERROR, 'Tienes algún tipo de error en la edición')
-		return redirect('proyectoinicio:editar', noticia_pk=noticia.id)
 
 
 def creaNoticia(request):
 	form = NewsItemForm(request.POST or None)
 	if form.is_valid():
 		form.save()
-		messages.add_message(request, messages.SUCCESS, 'Enhorabuena, se ha creado tu noticia')
+		messages.add_message(request, messages.SUCCESS, 'Enhorabuena, se ha creado tu noticia', fail_silently=True)
 		return redirect('proyectoinicio:index')
 	return render(request, 'proyectoinicio/creaNoticia.html', {'form': form})
-
-
-def crear(request):
-	try:
-		titulo = request.POST['title']
-		descripcion = request.POST['description']
-		fecha = timezone.now()
-		noticia = NewsItem(title=titulo, description=descripcion, publish_date=fecha)
-		noticia.save()
-		messages.add_message(request, messages.SUCCESS, 'Se ha creado la noticia correctamente')
-		return redirect('proyectoinicio:index', permanent=True)
-	except (ValidationError, ValueError, NameError):
-		messages.add_message(request, messages.ERROR, 'Ha tenido algún tipo de error en la validacion')
-		return redirect('proyectoinicio:crearNoticia')
 
 
 class NoticiasView(generic.ListView):

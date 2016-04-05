@@ -1,5 +1,9 @@
-from django.test import TestCase
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from django.test import TestCase, RequestFactory
 from .models import NewsItem, Event
+from .views import creaNoticia, editaNoticia
 from django.core.urlresolvers import reverse
 import datetime
 from django.utils import timezone
@@ -73,6 +77,30 @@ def crear_evento(titulo, descripcion):
 
 
 class NewsitemViewTests(TestCase):
+
+	def setUp(self):
+		# Todos los tests necesitan acceso a la request
+		self.factory = RequestFactory()
+
+	def test_vista_con_todo(self):
+		"""
+		EN principio como no le pasamos ningun dato, nos tendrian que aparecer
+		dos mensajes, uno que no hay noticias y otro, diciendo que no hay
+		eventos.
+		"""
+		response = self.client.get(reverse('proyectoinicio:todo'))
+		self.assertContains(response, "No se ha devuelto ninguna noticia")
+		self.assertContains(response, "No se ha devuelto ning\xc3\xban evento") #Para saltarme la tilde
+
+	def test_index(self):
+		"""
+		Comprobamos que el index sea correcto, a ver si nos sale un
+		mensajito que nos diga de crear una noticia.
+		"""
+		response = self.client.get(reverse('proyectoinicio:noticias'))
+		self.assertEqual(response.status_code, 200)
+		self.assertContains(response, "Quieres crear una noticia")
+
 	def test_index_view_sin_noticias(self):
 		"""
 		Si no existe ninguna noticia, deberia de aparecer un mensajito
@@ -121,11 +149,11 @@ class NewsitemViewTests(TestCase):
 
 	def test_vista_borrado(self):
 		"""
-		La ventana de borrar tiene que tener una confirmacion.
+		La ventana de borrar tiene que encontrar el objeto.
 		"""
-		noticia = create_newsitemP(titulo="prueba" , descripcion="prueba de pasado", dias=3)
+		noticia = create_newsitemP(titulo="prueba", descripcion="prueba de pasado", dias=3)
 		response = self.client.get(reverse('proyectoinicio:borrar', kwargs={'noticia_pk': noticia.id}))
-		self.assertContains(response, "Se ha borrado la noticia")
+		self.assertEqual(response.status_code, 302)
 
 	def test_vista_actualizada(self):
 		"""
@@ -137,12 +165,39 @@ class NewsitemViewTests(TestCase):
 
 	def test_vista_crear(self):
 		"""
-		Al principio nos tendria que llevar a una pagina que contenga un formulario en
-		el cual crearemos las noticias, para de ahi despues crear la noticia per se en
-		la base de datos
+		Si se nos crea un objeto y nos redirige a Index, será correcto
 		"""
-		response = self.client.get(reverse('proyectoinicio:crearNoticia'))
-		self.assertContains(response, 'form') #que contenga un formulario, es todo
+		request = self.factory.post('/v1/crear')
+		request.POST['title'] = "Hola"
+		request.POST['description'] = "Blablabla"
+		request.POST['publish_date'] = timezone.now()
+		response = creaNoticia(request)
+		self.assertEqual(response.status_code, 302)
+
+	def test_vista_editar(self):
+		"""
+		Verifiquemos que nos redirige correctamente al editar una noticia
+		cualquiera.
+		"""
+		noticia = create_newsitemP(titulo="prueba" , descripcion="prueba de pasado", dias=3)
+		request = self.factory.post('/v1/editar/%s' % (noticia.id))
+		request.POST['title'] = "Hola"
+		request.POST['description'] = "Blablabla"
+		request.POST['publish_date'] = timezone.now()
+		response = editaNoticia(request, noticia.id)
+		self.assertEqual(response.status_code, 302)
+
+	def test_vista_editar_invalido(self):
+		"""
+		Le pasamos un campo inválido y si nos redirige donde debe.
+		"""
+		noticia = create_newsitemP(titulo="prueba" , descripcion="prueba de pasado", dias=3)
+		request = self.factory.post('/v1/editar/%s' % (noticia.id))
+		request.POST['title'] = "Hola"
+		request.POST['description'] = "Blablabla"
+		request.POST['publish_date'] = "fallo a drede"
+		response = editaNoticia(request, noticia.id)
+		self.assertEqual(response.status_code, 200)
 
 	def test_VBC_vista(self):
 		"""

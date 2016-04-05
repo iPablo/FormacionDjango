@@ -7,31 +7,31 @@ from django.utils import timezone
 
 
 class Base(models.Model):
-    title = models.CharField(max_length=200)
+	title = models.CharField(max_length=200)
 
-    class Meta:
-        abstract = True
+	class Meta:
+		abstract = True
 
 
 class BaseNews(Base):
-    description = models.CharField(max_length=200)
+	description = models.CharField(max_length=200)
 
-    def __unicode__(self):
-        return self.title
+	def __unicode__(self):
+		return self.title
 
 
 class NewsItem(BaseNews):
-    publish_date = models.DateTimeField('Fecha publicada')
+	publish_date = models.DateTimeField('Fecha publicada')
 
-    def ha_pasado(self):  # Es un metodo para comprobar que si las noticias
-        # tienen mas de dos dias
-        # las seleccione y se vea que son antiguas
-        ahora = timezone.now()
-        diferencia_dias = ahora-self.publish_date
-        if diferencia_dias.days > 2:
-            return True
-        else:
-            return False
+	def ha_pasado(self):  # Es un metodo para comprobar que si las noticias
+		# tienen mas de dos dias
+		# las seleccione y se vea que son antiguas
+		ahora = timezone.now()
+		diferencia_dias = ahora-self.publish_date
+		if diferencia_dias.days > 2:
+			return True
+		else:
+			return False
 
 
 class Event(BaseNews):
