@@ -1,0 +1,28 @@
+{% load staticfiles %}
+<html>
+<head>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="{% static 'css/blog.css' %}">
+</head>
+<body>
+  <div class="page-header">
+
+    <h1>{{ newsitem.title }}</h1>
+
+  </div>
+
+<p>Descripción: <i>{{ newsitem.description }}</i></p>
+<p>Fecha de publicacion: <i>{{ newsitem.publish_date }}</i></p>
+
+<p>
+<a class="btn btn-default" href="{% url 'blog:editnews' newsitem.id %}"><span class="glyphicon glyphicon-pencil">Editar</span></a>
+<a class="btn btn-default" href="{% url 'blog:v1editnews' newsitem.id %}"><span class="glyphicon glyphicon-pencil">Editar v1</span></a>
+<a class="btn btn-default" href="{% url 'blog:deletenews' newsitem.id %}"><span class="glyphicon glyphicon-pencil">Borrar</span></a>
+<a class="btn btn-default" href="{% url 'blog:v1deletenews' newsitem.id %}"><span class="glyphicon glyphicon-pencil">Borrar v1</span></a>
+    <a href="{% url 'blog:noticias' %}">Regresar</a>
+</p>
+
+</form>
+</body>
+</html>

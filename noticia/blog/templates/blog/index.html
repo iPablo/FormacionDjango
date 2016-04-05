@@ -1,0 +1,17 @@
+{% load staticfiles %}
+<html>
+<head>
+  <title>Proyecto de iniciación</title>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="{% static 'css/blog.css' %}">
+</head>
+<body>
+  <div class="page-header">
+    <h1><a href="/">Proyecto de iniciación</a></h1>
+  </div>
+<h1><a href="{% url 'blog:noticias' %}">Noticias</a></h1>
+<h1><a href="{% url 'blog:eventos' %}">Eventos</a></h1>
+<h1><a href="{% url 'blog:todo' %}">Noticias y Eventos</a></h1>
+</body>
+</html>

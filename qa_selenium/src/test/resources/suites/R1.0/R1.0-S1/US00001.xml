@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Test suite of a specific functionality -->
+<!-- Description: Check google main page and do a search -->
+<suite name="US00001TestSets" enabled="true">
+	<test name="US00001TestSets">
+		<classes>
+			<class name="com.emergya.testSets.GoogleTestSet" />
+				<methods>
+                    <include name="googleMainPageSearch" />
+                    <include name="googleDoSearchAndAccessToPage" />
+                </methods>
+		</classes>
+	</test>
+</suite>

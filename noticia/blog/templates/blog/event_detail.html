@@ -1,0 +1,20 @@
+{% load staticfiles %}
+<html>
+<head>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="{% static 'css/blog.css' %}">
+</head>
+<body>
+<h1>{{ event.title }}</h1>
+<p>{{ event.description }} </p>
+<p>Comienzo del evento: <i>{{ event.start_date }}</i></p>
+<p>Finalización del evento: <i>{{ event.end_date }}</i></p>
+<p>
+<a class="btn btn-default" href="{% url 'blog:editevent' event.id %}"><span class="glyphicon glyphicon-pencil">Editar</span></a>
+<a class="btn btn-default" href="{% url 'blog:deleteevent' event.id %}"><span class="glyphicon glyphicon-pencil">Borrar</span></a>
+    <a href="{% url 'blog:eventos' %}">Regresar</a>
+</p>
+</form>
+</body>
+</html>
