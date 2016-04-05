@@ -29,7 +29,7 @@
         <save.Video.For.Passed>false</save.Video.For.Passed>
         
         <!-- Parameters for selenium -->
-        <environment.url>http://www.google.es</environment.url>
+        <environment.url>http://127.0.0.1:8000</environment.url>
         <env.context></env.context>
 	</properties>
 
