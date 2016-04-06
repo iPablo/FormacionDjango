@@ -29,6 +29,7 @@ class BaseNews(Base):
 
 
 class NewsItem(BaseNews):
+    owner = models.ForeignKey('auth.User', related_name='newsitem')
     publish_date = models.DateTimeField(default=timezone.now)
 
     def __unicode__(self):
@@ -39,6 +40,7 @@ class NewsItem(BaseNews):
 
 
 class Event(BaseNews):
+    owner = models.ForeignKey('auth.User', related_name='event')
     start_date = models.DateTimeField(blank=True, null=True)
     end_date = models.DateTimeField(blank=True, null=True)
 

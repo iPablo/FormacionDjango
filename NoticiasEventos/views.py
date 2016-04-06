@@ -1,13 +1,32 @@
 """Views.py"""
 from django.shortcuts import render
 from .models import NewsItem, Event
-from .forms import NewsItemForm
+from .forms import NewsItemForm, EventForm
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.core.urlresolvers import reverse_lazy
-from .serializers import NewsItemSerializer, EventSerializer
-from rest_framework import generics
+from .serializers import NewsItemSerializer, EventSerializer, UserSerializer
+from rest_framework import generics, permissions
+from django.contrib.auth.models import User
+from .permissions import IsOwnerOrReadOnly
 
 # API
+
+
+class UserList(generics.ListAPIView):
+    """Class UserList"""
+
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class UserDetail(generics.RetrieveAPIView):
+    """Class UserDetail"""
+
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
 class NewsItemListAPI(generics.ListCreateAPIView):
@@ -15,6 +34,8 @@ class NewsItemListAPI(generics.ListCreateAPIView):
 
     queryset = NewsItem.objects.all()
     serializer_class = NewsItemSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+                          IsOwnerOrReadOnly)
 
 
 class NewsItemDetailAPI(generics.RetrieveUpdateDestroyAPIView):
@@ -22,6 +43,8 @@ class NewsItemDetailAPI(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = NewsItem.objects.all()
     serializer_class = NewsItemSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+                          IsOwnerOrReadOnly)
 
 
 class EventListAPI(generics.ListCreateAPIView):
@@ -29,6 +52,8 @@ class EventListAPI(generics.ListCreateAPIView):
 
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+                          IsOwnerOrReadOnly)
 
 
 class EventDetailAPI(generics.RetrieveUpdateDestroyAPIView):
@@ -36,6 +61,8 @@ class EventDetailAPI(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+                          IsOwnerOrReadOnly)
 
 # INDEX
 
@@ -113,7 +140,8 @@ class v2Create(CreateView):
 
     model = NewsItem
     success_url = reverse_lazy('NoticiasEventos:v2List')
-    fields = ['title', 'description', 'publish_date']
+    fields = ['title', 'description', 'publish_date', 'owner']
+    # form_class = NewsItemForm
     template_name = "NoticiasEventos/v1Create.html"
 
 
@@ -122,7 +150,7 @@ class v2Update(UpdateView):
 
     model = NewsItem
     success_url = reverse_lazy('NoticiasEventos:v2List')
-    fields = ['title', 'description', 'publish_date']
+    fields = ['title', 'description', 'publish_date', 'owner']
     template_name = "NoticiasEventos/v1Create.html"
 
 
@@ -148,7 +176,7 @@ class EventCreate(CreateView):
 
     model = Event
     success_url = reverse_lazy('NoticiasEventos:eventList')
-    fields = ['title', 'description', 'start_date', 'end_date']
+    fields = ['title', 'description', 'start_date', 'end_date', 'owner']
     template_name = "NoticiasEventos/eventCreate.html"
 
 
@@ -157,7 +185,7 @@ class EventUpdate(UpdateView):
 
     model = Event
     success_url = reverse_lazy('NoticiasEventos:eventList')
-    fields = ['title', 'description', 'start_date', 'end_date']
+    fields = ['title', 'description', 'start_date', 'end_date', 'owner']
     template_name = "NoticiasEventos/eventCreate.html"
 
 

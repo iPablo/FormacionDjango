@@ -6,11 +6,11 @@ class NewsItemForm(forms.ModelForm):
 
     class Meta:
         model = NewsItem
-        fields = ('title', 'description', 'publish_date')
+        fields = ('title', 'description', 'publish_date', 'owner')
 
 
 class EventForm(forms.ModelForm):
 
     class Meta:
         model = Event
-        fields = ('title', 'description', 'start_date', 'end_date')
+        fields = ('title', 'description', 'start_date', 'end_date', 'owner')

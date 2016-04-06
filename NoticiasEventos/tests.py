@@ -4,7 +4,8 @@ from django.utils import timezone
 from django.core.urlresolvers import reverse
 from .forms import NewsItemForm, EventForm
 from rest_framework import status
-from rest_framework.test import APITestCase
+from rest_framework.test import APITestCase, APIClient
+from django.contrib.auth.models import User
 # import ipdb; ipdb.set_trace()
 
 
@@ -20,20 +21,29 @@ class AdminTestCase(TestCase):
 class NewsItemListAPITestCase(APITestCase):
     """Class NewsItemListAPITestCase"""
 
+    def addUser(self):
+        User.objects.create_user(username='admin', password='passpass',
+                                 is_superuser=True)
+        return User.objects.get(username='admin')
+
     def addNewsItem(self):
         form = NewsItemForm(data={'title': 'test title',
                             'description': 'test description',
-                                  'publish_date': timezone.now()})
+                                  'publish_date': timezone.now(),
+                                  'owner': self.addUser().id})
         form.is_valid()
         form.save()
         return NewsItem.objects.get(title="test title")
 
     def test_create(self):
         """Compruba si la API crea correctamente"""
+        user = self.addUser()
+        c = APIClient()
         url = reverse('NoticiasEventos:apiNewsItem')
         data = {'title': 'prueba api', 'description': 'prueba api',
-                'publish_date': timezone.now()}
-        response = self.client.post(url, data, format='json')
+                'publish_date': timezone.now(), 'owner': user.id}
+        c.force_authenticate(user=user)
+        response = c.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(NewsItem.objects.count(), 1)
         self.assertEqual(NewsItem.objects.get().title, 'prueba api')
@@ -55,13 +65,68 @@ class NewsItemListAPITestCase(APITestCase):
         self.assertEqual(NewsItem.objects.get().title, 'test title')
 
 
+class EventAPITestCase(APITestCase):
+    """Class EventAPITestCase"""
+
+    def addUser(self):
+        User.objects.create_user(username='admin', password='passpass',
+                                 is_superuser=True)
+        return User.objects.get(username='admin')
+
+    def addEvent(self):
+        form = EventForm(data={'title': 'event title',
+                                        'description': 'event description',
+                                        'start_date': timezone.now(),
+                                        'end_date': timezone.now(),
+                                        'owner': self.addUser().id})
+        form.is_valid()
+        form.save()
+        return Event.objects.get(title="event title")
+
+    def test_create(self):
+        '''Compruba si la API crea correctamente'''
+        user = self.addUser()
+        c = APIClient()
+        url = reverse('NoticiasEventos:apiEvent')
+        data = {'title': 'prueba api', 'description': 'prueba api',
+                'start_date': timezone.now(), 'end_date': timezone.now(),
+                'owner': user.id}
+        c.force_authenticate(user=user)
+        response = c.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Event.objects.count(), 1)
+        self.assertEqual(Event.objects.get().title, 'prueba api')
+
+    def test_read(self):
+        """Comprueba si la API muestra los objetos perfectamente"""
+        response = self.client.get(reverse('NoticiasEventos:apiEvent'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_update_delete(self):
+        """Comprueba si la API muestra la vista para borrar y actualizar"""
+        self.addEvent()
+        x = Event.objects.get(title='event title')
+        url = reverse('NoticiasEventos:apiEventDetail', kwargs={
+            'pk': x.id})
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Event.objects.count(), 1)
+        self.assertEqual(Event.objects.get().title, 'event title')
+
+
 class NewsItemTestCase(TestCase):
     """Class NewsItemTestCase"""
+
+    def addUser(self):
+        User.objects.create_user(username='admin', password='passpass',
+                                 is_superuser=True)
+        return User.objects.get(username='admin')
 
     def addNewsItem(self):
         form = NewsItemForm(data={'title': 'test title',
                             'description': 'test description',
-                                  'publish_date': timezone.now()})
+                                  'publish_date': timezone.now(),
+                                  'owner': self.addUser().id})
         form.is_valid()
         form.save()
         return NewsItem.objects.get(title="test title")
@@ -97,7 +162,8 @@ class NewsItemTestCase(TestCase):
         '''Comprueba la validacion del formulario y la creacion del objeto'''
         form = NewsItemForm(data={'title': 'prueba title',
                             'description': 'prueba description',
-                                  'publish_date': timezone.now()})
+                                  'publish_date': timezone.now(),
+                                  'owner': self.addUser().id})
         self.assertTrue(form.is_valid())
         form.save()
         x = NewsItem.objects.get(title="prueba title")
@@ -145,11 +211,17 @@ class NewsItemTestCase(TestCase):
 class EventTestCase(TestCase):
     """Class EventTestCase"""
 
+    def addUser(self):
+        User.objects.create_user(username='admin', password='passpass',
+                                 is_superuser=True)
+        return User.objects.get(username='admin')
+
     def addEvent(self):
         form = EventForm(data={'title': 'event title',
                                         'description': 'event description',
                                         'start_date': timezone.now(),
-                                        'end_date': timezone.now()})
+                                        'end_date': timezone.now(),
+                                        'owner': self.addUser().id})
         form.is_valid()
         form.save()
         return Event.objects.get(title="event title")
@@ -174,7 +246,8 @@ class EventTestCase(TestCase):
         form = EventForm(data={'title': 'simplePrueba',
                                         'description': 'simplePrueba',
                                         'start_date': timezone.now(),
-                                        'end_date': timezone.now()})
+                                        'end_date': timezone.now(),
+                                        'owner': self.addUser().id})
         self.assertTrue(form.is_valid())
         form.save()
         x = Event.objects.get(title="simplePrueba")

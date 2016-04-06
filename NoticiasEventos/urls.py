@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 from . import views
 from NoticiasEventos.views import v2List, v2Create, v2Update, v2Delete, \
  EventList, EventCreate, EventUpdate, EventDelete
@@ -35,6 +35,13 @@ urlpatterns = [
         name="apiNewsItemDetail"),
 
     url(r'^apiEvent/$', views.EventListAPI.as_view(), name="apiEvent"),
-    url(r'^apiEvent/(?P<pk>[0-9]+)/$', views.EventDetailAPI.as_view()),
+    url(r'^apiEvent/(?P<pk>[0-9]+)/$', views.EventDetailAPI.as_view(),
+        name="apiEventDetail"),
+
+    url(r'^users/$', views.UserList.as_view()),
+    url(r'^users/(?P<pk>[0-9]+)/$', views.UserDetail.as_view()),
 ]
 urlpatterns = format_suffix_patterns(urlpatterns)
+urlpatterns += [
+ url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+]
