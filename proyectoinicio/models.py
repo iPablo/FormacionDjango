@@ -22,6 +22,7 @@ class BaseNews(Base):
 
 class NewsItem(BaseNews):
 	publish_date = models.DateTimeField('Fecha publicada')
+	owner = models.ForeignKey('auth.User', related_name='newsitem')
 
 	def ha_pasado(self):  # Es un metodo para comprobar que si las noticias
 		# tienen mas de dos dias
@@ -37,6 +38,7 @@ class NewsItem(BaseNews):
 class Event(BaseNews):
 	start_date = models.DateTimeField('Fecha de inicio')
 	end_date = models.DateTimeField('Fecha de fin')
+	owner = models.ForeignKey('auth.User', related_name='event')
 
 	def dameDuracion(self):  # Devuelve la duracion en dias del evento en cuestion
 		if self.end_date < self.start_date:

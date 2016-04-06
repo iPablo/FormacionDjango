@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from rest_framework.urlpatterns import format_suffix_patterns
 from . import views
+from django.conf.urls import include
 
 app_name = "proyectoinicio"
 urlpatterns = [
@@ -21,9 +22,16 @@ urlpatterns = [
     url(r'^eventos/crear$', views.EventCreate.as_view(), name='crearEvento'),
     url(r'^eventos/borrar/(?P<event_pk>[0-9]+)$', views.EventDelete.as_view(), name='borrarEvento'),
     url(r'^eventos/editar/(?P<event_pk>[0-9]+)$', views.EventUpdate.as_view(), name='editarEvento'),
-    url(r'^api/noticias/$', views.NewsItemList.as_view()),
-    url(r'^api/noticias/(?P<pk>[0-9]+)/$', views.NewsItemDetail.as_view()),
-    url(r'^api/eventos/$', views.EventRESTList.as_view()),
-    url(r'^api/eventos/(?P<pk>[0-9]+)/$', views.EventRESTDetail.as_view()),
+    url(r'^api/noticias/$', views.NewsItemList.as_view(), name='testNoticias'),
+    url(r'^api/noticias/(?P<pk>[0-9]+)/$', views.NewsItemDetail.as_view(), name='testNoticiasB'),
+    url(r'^api/eventos/$', views.EventRESTList.as_view(), name="testEventos"),
+    url(r'^api/eventos/(?P<pk>[0-9]+)/$', views.EventRESTDetail.as_view(), name="testEventosB"),
+    url(r'^users/$', views.UserList.as_view()),
+    url(r'^users/(?P<pk>[0-9]+)/$', views.UserDetail.as_view()),
 ]
+
+urlpatterns += [
+    url(r'^api/noticias/', include('rest_framework.urls', namespace='rest_framework')),
+]
+
 urlpatterns = format_suffix_patterns(urlpatterns)

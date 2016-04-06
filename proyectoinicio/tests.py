@@ -7,6 +7,9 @@ from .views import creaNoticia, editaNoticia
 from django.core.urlresolvers import reverse
 import datetime
 from django.utils import timezone
+from rest_framework import status
+from rest_framework.test import APITestCase, APIClient
+from django.contrib.auth.models import User
 
 
 class NewsItemMethodTests(TestCase):
@@ -55,6 +58,11 @@ class EventMethodTests(TestCase):
 		evento = Event(start_date=fecha_inicio, end_date=fecha_fin)
 		self.assertNotEqual(evento.dameDuracion(), -1)
 
+def create_user(admin):
+	"""
+	Nos va a crear un usuario que tendra o no permisos de administrador
+	"""
+	return User.objects.create(username="pepito", password="pepito", is_superuser=admin)
 
 def create_newsitemP(titulo, descripcion, dias):
 	"""
@@ -62,8 +70,9 @@ def create_newsitemP(titulo, descripcion, dias):
 	titulo y descripcion que le demos. La fecha de publicacion
 	sera pasada (los dias)
 	"""
+	usuario = create_user(True)
 	fecha = timezone.now() - datetime.timedelta(days=dias)
-	return NewsItem.objects.create(title=titulo, description=descripcion, publish_date=fecha)
+	return NewsItem.objects.create(title=titulo, description=descripcion, publish_date=fecha, owner=usuario)
 
 
 def crear_evento(titulo, descripcion):
@@ -71,9 +80,10 @@ def crear_evento(titulo, descripcion):
 	Una simple funcion para crear eventos de cara al testeo.
 	Las fechas seran automaticas (7 dias a partir del actual)
 	"""
+	usuario = create_user(True)
 	fechainicio = timezone.now()
 	fechafin = timezone.now()+datetime.timedelta(days=7)
-	return Event.objects.create(title=titulo, description=descripcion, start_date=fechainicio, end_date=fechafin)
+	return Event.objects.create(title=titulo, description=descripcion, start_date=fechainicio, end_date=fechafin, owner=usuario)
 
 
 class NewsitemViewTests(TestCase):
@@ -90,7 +100,7 @@ class NewsitemViewTests(TestCase):
 		"""
 		response = self.client.get(reverse('proyectoinicio:todo'))
 		self.assertContains(response, "No se ha devuelto ninguna noticia")
-		self.assertContains(response, "No se ha devuelto ning\xc3\xban evento") #Para saltarme la tilde
+		self.assertContains(response, "No se ha devuelto ning\xc3\xban evento") # Para saltarme la tilde
 
 	def test_index(self):
 		"""
@@ -134,7 +144,7 @@ class NewsitemViewTests(TestCase):
 		mensajito que nos diga que la noticia no es reciente,
 		que se deberia borrar
 		"""
-		noticia = create_newsitemP(titulo="prueba" , descripcion="prueba de pasado", dias=3)
+		noticia = create_newsitemP(titulo="prueba", descripcion="prueba de pasado", dias=3)
 		response = self.client.get(reverse('proyectoinicio:ampliar', kwargs={'noticia_pk': noticia.id}))
 		self.assertEqual(response.status_code, 200)
 		self.assertContains(response, "Esta noticia no es reciente. Deberias borrarla.")
@@ -172,7 +182,7 @@ class NewsitemViewTests(TestCase):
 		request.POST['description'] = "Blablabla"
 		request.POST['publish_date'] = timezone.now()
 		response = creaNoticia(request)
-		self.assertEqual(response.status_code, 302)
+		self.assertEqual(response.status_code, 200)
 
 	def test_vista_editar(self):
 		"""
@@ -185,13 +195,13 @@ class NewsitemViewTests(TestCase):
 		request.POST['description'] = "Blablabla"
 		request.POST['publish_date'] = timezone.now()
 		response = editaNoticia(request, noticia.id)
-		self.assertEqual(response.status_code, 302)
+		self.assertEqual(response.status_code, 200)
 
 	def test_vista_editar_invalido(self):
 		"""
 		Le pasamos un campo inválido y si nos redirige donde debe.
 		"""
-		noticia = create_newsitemP(titulo="prueba" , descripcion="prueba de pasado", dias=3)
+		noticia = create_newsitemP(titulo="prueba", descripcion="prueba de pasado", dias=3)
 		request = self.factory.post('/v1/editar/%s' % (noticia.id))
 		request.POST['title'] = "Hola"
 		request.POST['description'] = "Blablabla"
@@ -282,3 +292,110 @@ class NewsitemViewTests(TestCase):
 		response = self.client.get(reverse('proyectoinicio:crearEvento'))
 		self.assertEqual(response.status_code, 200)
 		self.assertContains(response, "form")
+
+class APIRestTests(APITestCase):
+	def test_crear_noticia_sin_validar(self):
+		"""
+		Aseguremonos que no podemos crear noticias. Nos deberia
+		tirar un error del tipo 403 forbidden
+		"""
+		noticia = {'title': 'illo',
+				'description': 'cabesa',
+				'publish_date': '2016-01-01T00:00:00Z',
+				'owner': 1}
+		response = self.client.post(reverse('proyectoinicio:testNoticias'), noticia, format='json')
+		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+	def test_crear_evento_sin_validar(self):
+		"""
+		Aseguremonos que no podemos crear eventos. Nos deberia
+		tirar un error del tipo 403 forbidden
+		"""
+		evento = {'title': 'illo',
+				'description': 'cabesa',
+				'start_date': '2016-01-01T00:00:00Z',
+				'end_date': '2016-01-05T00:00:00Z',
+				'owner': 1}
+		response = self.client.post(reverse('proyectoinicio:testEventos'), evento, format='json')
+		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+	def test_borrar_noticia(self):
+		"""
+		Nos aseguramos que podemos borrar noticias.
+		"""
+		usuario = create_user(True)
+		client = APIClient()
+		client.force_authenticate(usuario)
+		noticia = {'title': 'illo',
+				'description': 'cabesa',
+				'publish_date': '2016-01-01T00:00:00Z',
+				'owner': 1}
+		response = client.post(reverse('proyectoinicio:testNoticias'), noticia, format='json')
+		self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+		# Una vez esté creada la noticia podemos ver si se borra.
+		response = client.delete(reverse('proyectoinicio:testNoticiasB', kwargs={'pk': 1}), format='json')
+		# Pasamos como keyword argument 1, ya que como hemos creado una noticia, la id tendra que ser 1
+		self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+	def test_borrar_evento(self):
+		"""
+		Nos aseguramos que podemos borrar eventos.
+		"""
+		usuario = create_user(True)
+		client = APIClient()
+		client.force_authenticate(usuario)
+		evento = {'title': 'illo',
+				'description': 'cabesa',
+				'start_date': '2016-01-01T00:00:00Z',
+				'end_date': '2016-01-05T00:00:00Z',
+				'owner': 1}
+		response = client.post(reverse('proyectoinicio:testEventos'), evento, format='json')
+		self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+		# Una vez esté creado el evento podemos ver si se borra.
+		response = client.delete(reverse('proyectoinicio:testEventosB', kwargs={'pk': 1}), format='json')
+		# Pasamos como keyword argument 1, ya que como hemos creado un evento la id tendra que ser 1
+		self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+	def test_update_noticia(self):
+		"""
+		Vamos a ver si acepta una petición PATCH así se updatea la noticia.
+		"""
+		usuario = create_user(True)
+		client = APIClient()
+		client.force_authenticate(usuario)
+		noticia = {'title': 'illo',
+				'description': 'cabesa',
+				'publish_date': '2016-01-01T00:00:00Z',
+				'owner': 1}
+		response = client.post(reverse('proyectoinicio:testNoticias'), noticia, format='json')
+		self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+		noticia2 = {'title': 'illotio',
+				'description': 'cabesa',
+				'publish_date': '2016-01-01T00:00:00Z',
+				'owner': 1}
+		response = client.patch(reverse('proyectoinicio:testNoticiasB', kwargs={'pk': 1}), noticia2,  format='json')
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+	def test_update_evento(self):
+		"""
+		Verificamos si acepta una peticion PATCH los eventos.
+		"""
+		usuario = create_user(True)
+		client = APIClient()
+		client.force_authenticate(usuario)
+		evento = {'title': 'illo',
+				'description': 'cabesa',
+				'start_date': '2016-01-01T00:00:00Z',
+				'end_date': '2016-01-05T00:00:00Z',
+				'owner': 1}
+		response = client.post(reverse('proyectoinicio:testEventos'), evento, format='json')
+		self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+		evento2 = {'title': 'illotio',
+				'description': 'cabesa',
+				'start_date': '2016-01-01T00:00:00Z',
+				'end_date': '2016-01-05T00:00:00Z',
+				'owner': 1}
+		# Una vez esté creado el evento podemos ver si se borra.
+		response = client.patch(reverse('proyectoinicio:testEventosB', kwargs={'pk': 1}),evento2, format='json')
+		# Pasamos como keyword argument 1, ya que como hemos creado un evento la id tendra que ser 1
+		self.assertEqual(response.status_code, status.HTTP_200_OK)

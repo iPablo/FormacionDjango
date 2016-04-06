@@ -1,17 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 from django.shortcuts import render, get_object_or_404
 from .models import Event, NewsItem
 from django.core.urlresolvers import reverse
 from django.views import generic
-from django.core.exceptions import ValidationError
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from rest_framework import generics
-from .serializers import NewsItemSerializer, EventSerializer
+from .serializers import NewsItemSerializer, EventSerializer, UserSerializer
 from django.shortcuts import redirect
-from .forms import NewsItemForm
+from .forms import NewsItemForm, EventForm
+from django.contrib.auth.models import User
+from rest_framework import permissions
+from .permissions import IsOwnerOrReadOnly
 
 
 def index(request):
@@ -95,9 +96,9 @@ class NoticiasDelete(generic.DeleteView):
 class NoticiasUpdate(SuccessMessageMixin, generic.UpdateView):
 	model = NewsItem
 	success_message = "Se ha actualizado correctamente"
-	fields = ['title', 'description', 'publish_date']
 	context_object_name = 'noticia'
 	pk_url_kwarg = 'noticia_pk'
+	form_class = NewsItemForm
 	# template_name= 'proyectoinicio/vistaEdicion.html'
 	# POR DEFECTO ES nombremodel_form
 
@@ -109,7 +110,8 @@ class NoticiasCreate(SuccessMessageMixin, generic.CreateView):
 	success_message = "Se ha creado correctamente"
 	model = NewsItem
 	template_name = "proyectoinicio/newsitem_create_form.html"
-	fields = ['title', 'description', 'publish_date']
+	form_class = NewsItemForm
+
 
 	def get_success_url(self):
 		return reverse('proyectoinicio:index')
@@ -126,13 +128,14 @@ class EventsView(generic.ListView):
 
 class EventDetail(generic.DetailView):
 	model = Event
-	fields = ['title', 'description', 'start_date', 'end_date']
 	template_name = "proyectoinicio/event_detail.html"
+	form_class = EventForm
+
 
 
 class EventCreate(SuccessMessageMixin, generic.CreateView):
 	model = Event
-	fields = ['title', 'description', 'start_date', 'end_date']
+	form_class = EventForm
 	template_name = "proyectoinicio/event_create_form.html"
 	success_message = "Se ha creado el evento satisfactoriamente."
 
@@ -152,7 +155,7 @@ class EventDelete(SuccessMessageMixin, generic.DeleteView):
 class EventUpdate(SuccessMessageMixin, generic.UpdateView):
 	model = Event
 	success_message = "Se ha actualizado satisfactoriamente"
-	fields = ['title', 'description', 'start_date', 'end_date']
+	form_class = EventForm
 	context_object_name = "evento"
 	pk_url_kwarg = "event_pk"
 
@@ -166,6 +169,10 @@ class NewsItemList(generics.ListCreateAPIView):
 	"""
 	queryset = NewsItem.objects.all()
 	serializer_class = NewsItemSerializer
+	permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+	def perform_create(self, serializer):
+		serializer.save(owner=self.request.user)
 
 
 class NewsItemDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -174,7 +181,7 @@ class NewsItemDetail(generics.RetrieveUpdateDestroyAPIView):
 	"""
 	queryset = NewsItem.objects.all()
 	serializer_class = NewsItemSerializer
-
+	permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly,)
 
 class EventRESTList(generics.ListCreateAPIView):
 	"""
@@ -182,6 +189,10 @@ class EventRESTList(generics.ListCreateAPIView):
 	"""
 	queryset = Event.objects.all()
 	serializer_class = EventSerializer
+	permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+	def perform_create(self, serializer):
+		serializer.save(owner=self.request.user)
 
 
 class EventRESTDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -190,3 +201,14 @@ class EventRESTDetail(generics.RetrieveUpdateDestroyAPIView):
 	"""
 	queryset = Event.objects.all()
 	serializer_class = EventSerializer
+	permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly,)
+
+
+class UserList(generics.ListAPIView):
+	queryset = User.objects.all()
+	serializer_class = UserSerializer
+
+
+class UserDetail(generics.RetrieveAPIView):
+	queryset = User.objects.all()
+	serializer_class = UserSerializer
