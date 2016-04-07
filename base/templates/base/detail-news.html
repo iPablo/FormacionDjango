@@ -1,7 +1,21 @@
-<h1>{{ new.title }}</h1>
+<head>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+</head>
+<div class="panel panel-default">
+    <div class="panel-heading"><h1>{{ new.title }}</h1></div>
+      <div class="panel-body">
+
 <h3>
     {{ new.description }}
 </h3>
 <h5>
     {{ new.publish_date }}
 </h5>
+<a href="{% url 'base:update_new' new.id %}">Editar</a> | 
+<a href="{% url 'base:delete_new' new.id %}">Eliminar</a><br/><br/>
+
+<a href="{% url 'base:index' %}"><button>Volver</button></a>
+</div>
+</div>
+</div>

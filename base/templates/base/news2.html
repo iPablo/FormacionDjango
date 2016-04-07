@@ -1,13 +1,25 @@
-<h1>Noticias (Clases)</h1>
-{% block content %}
+<head>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+</head>
+<div class="panel panel-default">
+    <div class="panel-heading"><h1>Noticias (Clases)</h1></div>
+      <div class="panel-body">
+
+{% if object_list %}
     <ul>
         {% for item in object_list %}
-            <li><a href="{% url 'base:NewsItemDetail' item.id %}">{{ item.title }}</a><br/>
-                <a href="{% url 'base:NewsUpdate' item.id %}">Editar</a><br/>
-                <a href="{% url 'base:NewsDelete' item.id %}">Borrar</a>
+            <li><a href="{% url 'base:NewsItemDetail' item.id %}">{{ item.title }}</a>
             </li>
             <br/>
         {% endfor %}
     </ul>
-    <a href="{% url 'base:NewsCreate' %}"><button>Nueva</button></a>
-{% endblock %}
+{% else %}
+    <p>No hay noticias disponibles</p>
+{% endif %}
+<a href="{% url 'base:NewsCreate' %}"><button>Nueva</button></a>
+
+<a href="{% url 'base:index' %}"><button>Volver</button></a>
+</div>
+</div>
+</div>

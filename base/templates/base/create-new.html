@@ -1,5 +1,11 @@
+<head>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+</head>
 <h1>Nueva noticia</h1>
 <form method="POST">{% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Guardar</button>
 </form>
+
+<a href="{% url 'base:index' %}"><button>Volver</button></a>

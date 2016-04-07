@@ -1,19 +1,31 @@
-<h1>Funciones</h1>
+<html>
+<head>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+</head>
+<body>
+  <center>
+  <div class="panel panel-default">
+    <div class="panel-heading"><h1 id="arranque">Funciones</h1></div>
+      <div class="panel-body">
+        <a href="v1/todos">Todos</a> |
+        <a href="v1/news">Noticias</a> |
+        <a href="v1/events">Eventos</a> |
+        <a href="API/news">API</a>
+      </div>
+    </div>
+  </div>
 
-<a href="v1/todos">Todos</a><br>
-<a href="v1/news">Noticias</a><br>
-<a href="v1/events">Eventos</a>
-
-<h1>Clases</h1>
-
-<a href="v2/todos">Todos</a><br>
-<a href="v2/news">Noticias</a><br>
-<a href="v2/events">Eventos</a>
-{% if messages %}
-        {% for item in messages %}
-        <h3{% if item.tags %} class="{{ item.tags }}"{% endif %}>
-            {% if item.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
-            {{ item }}
-        </h3>
-        {% endfor %}
-{% endif %}
+  <div class="panel panel-default">
+    <div class="panel-heading"><h1>Clases</h1></div>
+      <div class="panel-body">
+        <a href="v2/todos">Todos</a> |
+        <a href="v2/news">Noticias</a> |
+        <a href="v2/events">Eventos</a> |
+        <a href="API/news">API</a>
+      </div>
+    </div>
+  </div>
+  </center>
+</body>
+</html>

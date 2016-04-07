@@ -1,7 +1,17 @@
-<h2>Confirmar Borrado</h2>
+<head>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+</head>
+<div class="panel panel-default">
+    <div class="panel-heading"><h2>Confirmar Borrado</h2></div>
+      <div class="panel-body">
+
 <form method="POST">{% csrf_token %}
     ¿Estas seguro de que deseas borrar "{{ item.title }}"?
     <br/>
     <br/>
     <input type="submit" value="Borrar"/>
 </form>
+</div>
+</div>
+</div>

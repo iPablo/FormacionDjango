@@ -5,10 +5,10 @@ from django.shortcuts import render, get_object_or_404, redirect
 
 from .models import NewsItem, Event
 from .forms import NewsForm, EventsForm
-from django.utils import timezone
 from django.views.generic import *
 from django.core.urlresolvers import reverse, reverse_lazy
-
+from base.serializers import NewsItemSerializer, EventSerializer
+from rest_framework import generics
 
 def index(request):
     return render(request, 'base/index.html')
@@ -49,8 +49,7 @@ def create_new(request):
         if form.is_valid():
             new = form.save(commit=False)
             new.save()
-            news = NewsItem.objects.all()
-            return render(request, 'base/news.html', {'news': news})
+            return redirect('base:obtener_news')
     else:
         form = NewsForm()
     return render(request, 'base/create-new.html', {'form': form})
@@ -63,8 +62,7 @@ def update_new(request, new_id):
         if form.is_valid():
             post = form.save(commit=False)
             post.save()
-            news = NewsItem.objects.all()
-            return render(request, 'base/news.html', {'news': news})
+            return redirect('base:obtener_news')
     else:
         form = NewsForm(instance=new)
     return render(request, 'base/form-event.html', {'form': form})
@@ -85,8 +83,7 @@ def create_event(request):
             event = form.save(commit=False)
             if event.start_date <= event.end_date:
                 event.save()
-                events = Event.objects.all()
-                return render(request, 'base/events.html', {'events': events})
+                return redirect('base:obtener_events')
             else:
                 mensaje = 'La fecha de inicio no puede ser posterior a la fecha de fin'
                 return render(request, 'base/error.html', {'mensaje': mensaje})
@@ -101,10 +98,9 @@ def update_event(request, event_id):
         form = EventsForm(request.POST, instance=event)
         if form.is_valid():
             post = form.save(commit=False)
-            if post.start_date < post.end_date:
+            if post.start_date <= post.end_date:
                 post.save()
-                events = Event.objects.all()
-                return render(request, 'base/events.html', {'events': events})
+                return redirect('base:obtener_events')
             else:
                 mensaje = 'La fecha de inicio no puede ser posterior a la fecha de fin'
                 return render(request, 'base/error.html', {'mensaje': mensaje})
@@ -142,13 +138,8 @@ class NewsItemList(ListView):
 
 
 class NewsItemDetail(DetailView):
-    queryset = NewsItem.objects.all()
+    model = NewsItem
     template_name = "base/detalle-news-clases.html"
-
-    def get_object(self):
-        object = super(NewsItemDetail, self).get_object()
-        object.save()
-        return object
 
 
 class EventList(ListView):
@@ -157,13 +148,8 @@ class EventList(ListView):
 
 
 class EventsDetail(DetailView):
-    queryset = Event.objects.all()
+    model = Event
     template_name = "base/detalle-events-clases.html"
-
-    def get_object(self):
-        object = super(EventsDetail, self).get_object()
-        object.save()
-        return object
 
 
 class NewsCreate(CreateView):
@@ -210,3 +196,25 @@ class NewsDelete(DeleteView):
 class EventsDelete(DeleteView):
     model = Event
     success_url = reverse_lazy('base:EventList')
+
+"""API"""
+
+
+class NewsItemListAPI(generics.ListCreateAPIView):
+    queryset = NewsItem.objects.all()
+    serializer_class = NewsItemSerializer
+
+
+class NewsItemDetailAPI(generics.RetrieveUpdateDestroyAPIView):
+    queryset = NewsItem.objects.all()
+    serializer_class = NewsItemSerializer
+
+
+class EventsListAPI(generics.ListCreateAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+
+
+class EventsDetailAPI(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer

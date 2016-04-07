@@ -1,5 +1,8 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 from django.conf.urls import url
 from base.views import *
+from rest_framework.urlpatterns import format_suffix_patterns
 
 from . import views
 
@@ -30,4 +33,9 @@ urlpatterns = [
     url(r'^v2/events/update/(?P<pk>[0-9]+)/$', EventsUpdate.as_view(), name='EventsUpdate'),
     url(r'^v2/news/delete/(?P<pk>[0-9]+)/$', NewsDelete.as_view(), name='NewsDelete'),
     url(r'^v2/events/delete/(?P<pk>[0-9]+)/$', EventsDelete.as_view(), name='EventsDelete'),
+
+    url(r'^API/news/$', views.NewsItemListAPI.as_view(), name='NewsItemListAPI'),
+    url(r'^API/news/(?P<pk>[0-9]+)/$', views.NewsItemDetailAPI.as_view(), name='NewsItemDetailAPI'),
+    url(r'^API/events/$', views.EventsListAPI.as_view(), name='EventsListAPI'),
+    url(r'^API/events/(?P<pk>[0-9]+)/$', views.EventsDetailAPI.as_view(), name='EventsDetailAPI'),
 ]
