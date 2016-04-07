@@ -1,9 +1,12 @@
-from django.test import TestCase
-from .models import Base, BaseNews, NewsItem, Event
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from django.test import TestCase, RequestFactory
+from .models import NewsItem, Event
+from .views import creaNoticia, editaNoticia
 from django.core.urlresolvers import reverse
 import datetime
 from django.utils import timezone
-from django.core.exceptions import ValidationError
 
 
 class NewsItemMethodTests(TestCase):
@@ -13,10 +16,9 @@ class NewsItemMethodTests(TestCase):
 		El metodo tendria que devolver falso para noticias cuya
 		fecha de publicacion este mas de dos dias en el futuro
 		"""
-
 		hora = timezone.now() + datetime.timedelta(days=12)
 		noticia_futura = NewsItem(publish_date=hora)
-		self.assertEqual(noticia_futura.ha_pasado() , False)
+		self.assertEqual(noticia_futura.ha_pasado(), False)
 
 	def test_ha_pasado_con_noticias_pasadas(self):
 		"""
@@ -24,10 +26,10 @@ class NewsItemMethodTests(TestCase):
 		cuya fecha de publicacion fuese mucho mas de dos dias
 		en el pasado
 		"""
-
 		hora = timezone.now() - datetime.timedelta(days=12)
-		noticia_pasada =  NewsItem(publish_date=hora)
+		noticia_pasada = NewsItem(publish_date=hora)
 		self.assertEqual(noticia_pasada.ha_pasado(), True)
+
 
 class EventMethodTests(TestCase):
 
@@ -38,20 +40,21 @@ class EventMethodTests(TestCase):
 		la misma fecha, el resultado seria cero.
 		"""
 
-		fecha_inicio=timezone.now()+datetime.timedelta(days=1)
-		fecha_fin=timezone.now()+datetime.timedelta(days=1)
+		fecha_inicio = timezone.now()+datetime.timedelta(days=1)
+		fecha_fin = timezone.now()+datetime.timedelta(days=1)
 		evento = Event(start_date=fecha_inicio, end_date=fecha_fin)
 		self.assertEqual(evento.dameDuracion(), 0)
 
 	def test_dameDuracion_con_fecha_de_fin_antes(self):
 		"""
 		Como es obvio, la fecha de fin del evento no puede ser
-		antes que la fecha de inicio. 
+		antes que la fecha de inicio.
 		"""
-		fecha_inicio=timezone.now()+datetime.timedelta(days=1)
-		fecha_fin=timezone.now()
+		fecha_inicio = timezone.now()+datetime.timedelta(days=1)
+		fecha_fin = timezone.now()
 		evento = Event(start_date=fecha_inicio, end_date=fecha_fin)
 		self.assertNotEqual(evento.dameDuracion(), -1)
+
 
 def create_newsitemP(titulo, descripcion, dias):
 	"""
@@ -62,30 +65,56 @@ def create_newsitemP(titulo, descripcion, dias):
 	fecha = timezone.now() - datetime.timedelta(days=dias)
 	return NewsItem.objects.create(title=titulo, description=descripcion, publish_date=fecha)
 
+
 def crear_evento(titulo, descripcion):
 	"""
 	Una simple funcion para crear eventos de cara al testeo.
 	Las fechas seran automaticas (7 dias a partir del actual)
 	"""
-	fechainicio= timezone.now()
-	fechafin=timezone.now()+datetime.timedelta(days=7)
+	fechainicio = timezone.now()
+	fechafin = timezone.now()+datetime.timedelta(days=7)
 	return Event.objects.create(title=titulo, description=descripcion, start_date=fechainicio, end_date=fechafin)
 
+
 class NewsitemViewTests(TestCase):
+
+	def setUp(self):
+		# Todos los tests necesitan acceso a la request
+		self.factory = RequestFactory()
+
+	def test_vista_con_todo(self):
+		"""
+		EN principio como no le pasamos ningun dato, nos tendrian que aparecer
+		dos mensajes, uno que no hay noticias y otro, diciendo que no hay
+		eventos.
+		"""
+		response = self.client.get(reverse('proyectoinicio:todo'))
+		self.assertContains(response, "No se ha devuelto ninguna noticia")
+		self.assertContains(response, "No se ha devuelto ning\xc3\xban evento") #Para saltarme la tilde
+
+	def test_index(self):
+		"""
+		Comprobamos que el index sea correcto, a ver si nos sale un
+		mensajito que nos diga de crear una noticia.
+		"""
+		response = self.client.get(reverse('proyectoinicio:noticias'))
+		self.assertEqual(response.status_code, 200)
+		self.assertContains(response, "Quieres crear una noticia")
+
 	def test_index_view_sin_noticias(self):
 		"""
 		Si no existe ninguna noticia, deberia de aparecer un mensajito
 		que nos dijese que no existe ninguna pregunta
 		"""
 
-		response =  self.client.get(reverse('proyectoinicio:noticias'))
+		response = self.client.get(reverse('proyectoinicio:noticias'))
 		self.assertEqual(response.status_code, 200)
-		self.assertContains(response, "No hay noticias disponibles") #Lo verifica automaticamente en el HTML
+		self.assertContains(response, "No hay noticias disponibles")  # Lo verifica automaticamente en el HTML
 		self.assertQuerysetEqual(response.context['bloque_noticias'], [])
 
 	def test_index_view_con_noticias_pasadas(self):
 		"""
-		Deberia aparecer un indicador en la pagina que nos dijese 
+		Deberia aparecer un indicador en la pagina que nos dijese
 		claramente si la noticia ha ocurrido ya, para no dar casos
 		a errores de informacion
 		"""
@@ -106,42 +135,69 @@ class NewsitemViewTests(TestCase):
 		que se deberia borrar
 		"""
 		noticia = create_newsitemP(titulo="prueba" , descripcion="prueba de pasado", dias=3)
-		response = self.client.get(reverse('proyectoinicio:ampliar', kwargs={'noticia_pk':noticia.id}))
+		response = self.client.get(reverse('proyectoinicio:ampliar', kwargs={'noticia_pk': noticia.id}))
 		self.assertEqual(response.status_code, 200)
 		self.assertContains(response, "Esta noticia no es reciente. Deberias borrarla.")
 
 	def test_vista_ampliada_sin_noticias(self):
 		"""
-		Si ampliasemos una noticia sin pasarle ninguna ID tendriamos que tener un error
-		de estatus 404.
+		Si ampliasemos una noticia sin pasarle ninguna ID tendriamos que tener
+		un error de estatus 404.
 		"""
-		response = self.client.get(reverse('proyectoinicio:ampliar' , kwargs={'noticia_pk' : 11010101010}))
+		response = self.client.get(reverse('proyectoinicio:ampliar', kwargs={'noticia_pk': 11010101010}))
 		self.assertEqual(response.status_code, 404)
 
 	def test_vista_borrado(self):
 		"""
-		La ventana de borrar tiene que tener una confirmacion.
+		La ventana de borrar tiene que encontrar el objeto.
 		"""
-		noticia = create_newsitemP(titulo="prueba" , descripcion="prueba de pasado", dias=3)
-		response = self.client.get(reverse('proyectoinicio:borrar', kwargs={'noticia_pk' : noticia.id}))
-		self.assertContains(response, "Se ha borrado la noticia")
+		noticia = create_newsitemP(titulo="prueba", descripcion="prueba de pasado", dias=3)
+		response = self.client.get(reverse('proyectoinicio:borrar', kwargs={'noticia_pk': noticia.id}))
+		self.assertEqual(response.status_code, 302)
 
 	def test_vista_actualizada(self):
 		"""
 		La vista de actualizacion tiene que contener una noticia que le pasemos.
 		"""
 		noticia = create_newsitemP(titulo="prueba" , descripcion="prueba de pasado", dias=3)
-		response = self.client.get(reverse('proyectoinicio:editar', kwargs={'noticia_pk' : noticia.id}))
-		self.assertContains(response, noticia)	
+		response = self.client.get(reverse('proyectoinicio:editar', kwargs={'noticia_pk': noticia.id}))
+		self.assertContains(response, noticia)
 
 	def test_vista_crear(self):
 		"""
-		Al principio nos tendria que llevar a una pagina que contenga un formulario en
-		el cual crearemos las noticias, para de ahi despues crear la noticia per se en
-		la base de datos
+		Si se nos crea un objeto y nos redirige a Index, será correcto
 		"""
-		response = self.client.get(reverse('proyectoinicio:crearNoticia'))
-		self.assertContains(response, 'form') #que contenga un formulario, es todo
+		request = self.factory.post('/v1/crear')
+		request.POST['title'] = "Hola"
+		request.POST['description'] = "Blablabla"
+		request.POST['publish_date'] = timezone.now()
+		response = creaNoticia(request)
+		self.assertEqual(response.status_code, 302)
+
+	def test_vista_editar(self):
+		"""
+		Verifiquemos que nos redirige correctamente al editar una noticia
+		cualquiera.
+		"""
+		noticia = create_newsitemP(titulo="prueba" , descripcion="prueba de pasado", dias=3)
+		request = self.factory.post('/v1/editar/%s' % (noticia.id))
+		request.POST['title'] = "Hola"
+		request.POST['description'] = "Blablabla"
+		request.POST['publish_date'] = timezone.now()
+		response = editaNoticia(request, noticia.id)
+		self.assertEqual(response.status_code, 302)
+
+	def test_vista_editar_invalido(self):
+		"""
+		Le pasamos un campo inválido y si nos redirige donde debe.
+		"""
+		noticia = create_newsitemP(titulo="prueba" , descripcion="prueba de pasado", dias=3)
+		request = self.factory.post('/v1/editar/%s' % (noticia.id))
+		request.POST['title'] = "Hola"
+		request.POST['description'] = "Blablabla"
+		request.POST['publish_date'] = "fallo a drede"
+		response = editaNoticia(request, noticia.id)
+		self.assertEqual(response.status_code, 200)
 
 	def test_VBC_vista(self):
 		"""
@@ -158,8 +214,8 @@ class NewsitemViewTests(TestCase):
 		Es la vista por detalles. Para que sea correcta tenemos que tener una noticia dentro y
 		per se tenemos que tener un codigo de status 200
 		"""
-		noticia = create_newsitemP(titulo="prueba" , descripcion="prueba de pasado", dias=3)
-		response = self.client.get(reverse('proyectoinicio:ampliarVBC', kwargs={'noticia_pk' : noticia.id}))
+		noticia = create_newsitemP(titulo="prueba", descripcion="prueba de pasado", dias=3)
+		response = self.client.get(reverse('proyectoinicio:ampliarVBC', kwargs={'noticia_pk': noticia.id}))
 		self.assertEqual(response.status_code, 200)
 		self.assertContains(response, noticia)
 
@@ -168,8 +224,8 @@ class NewsitemViewTests(TestCase):
 		Prueba de la vista basada en clases del borrado. Al nosotros borrar la pagina
 		tiene que redirigirnos a una ventana de confirmacion, veamos si lo hace bien
 		"""
-		noticia = create_newsitemP(titulo="prueba" , descripcion="prueba de pasado", dias=3)
-		response = self.client.get(reverse('proyectoinicio:borrarVBC', kwargs={'noticia_pk' : noticia.id}))
+		noticia = create_newsitemP(titulo="prueba", descripcion="prueba de pasado", dias=3)
+		response = self.client.get(reverse('proyectoinicio:borrarVBC', kwargs={'noticia_pk': noticia.id}))
 		self.assertContains(response, "seguro")
 
 	def test_VBC_creado(self):
@@ -204,8 +260,8 @@ class NewsitemViewTests(TestCase):
 		Al coger detalle de un evento, la respuesta en la plantilla de Vista Ampliada
 		no puede ser "Ese evento no existe"
 		"""
-		evento = crear_evento(titulo="prueba" , descripcion="prueba de evento")
-		response = self.client.get(reverse('proyectoinicio:ampliarEvento', kwargs={'pk' : evento.id}))
+		evento = crear_evento(titulo="prueba", descripcion="prueba de evento")
+		response = self.client.get(reverse('proyectoinicio:ampliarEvento', kwargs={'pk': evento.id}))
 		self.assertEqual(response.status_code, 200)
 		self.assertNotContains(response, 'Ese evento no existe')
 
@@ -214,8 +270,8 @@ class NewsitemViewTests(TestCase):
 		Si borramos un evento nos tiene que redirigir a una pagina de confirmacion si
 		lo hacemos bien.
 		"""
-		evento = crear_evento(titulo="prueba" , descripcion="prueba de evento")
-		response = self.client.get(reverse('proyectoinicio:borrarEvento', kwargs={'event_pk' : evento.id}))
+		evento = crear_evento(titulo="prueba", descripcion="prueba de evento")
+		response = self.client.get(reverse('proyectoinicio:borrarEvento', kwargs={'event_pk': evento.id}))
 		self.assertEqual(response.status_code, 200)
 		self.assertContains(response, 'seguro')
 
@@ -226,10 +282,3 @@ class NewsitemViewTests(TestCase):
 		response = self.client.get(reverse('proyectoinicio:crearEvento'))
 		self.assertEqual(response.status_code, 200)
 		self.assertContains(response, "form")
-
-
-
-
-
-
-
