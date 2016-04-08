@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 from django.utils import timezone
 from django.db import models
-import datetime
+
 
 # Create your models here.
 
@@ -23,7 +23,7 @@ class BaseNews(Base):
 
 
 class NewsItem(BaseNews):
-    publish_date = models.DateTimeField(blank=True, null=True)
+    publish_date = models.DateTimeField(blank=False, null=False)
 
     def publish(self):
             self.published_date = timezone.now()
@@ -31,5 +31,5 @@ class NewsItem(BaseNews):
 
 
 class Event(BaseNews):
-    start_date = models.DateTimeField(blank=True, null=True)
-    end_date = models.DateTimeField(blank=True, null=True)
+    start_date = models.DateTimeField(blank=False, null=False)
+    end_date = models.DateTimeField(blank=False, null=False)

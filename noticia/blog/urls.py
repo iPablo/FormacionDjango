@@ -1,36 +1,44 @@
 from django.conf.urls import url
 from .views import (
-        NewsItemList,
+    #    NewsItemList,
         NewsItemDetail,
         NewsItemCreation,
         NewsItemUpdate,
         NewsItemDelete,
-        EventList,
+        #EventList,
         EventDetail,
         EventCreation,
         EventUpdate,
-        EventDelete
+        EventDelete,
     )
 from . import views
+from rest_framework.urlpatterns import format_suffix_patterns
 app_name = 'blog'
 urlpatterns = [
         url(r'^$', views.index, name='index'),
         url(r'^todo/$', views.todo, name='todo'),
         url(r'^noticias/$', views.newsitem_list, name='noticias'),
-        url(r'^noticias/$', NewsItemList.as_view(), name='listnews'),
-        url(r'^noticias/(?P<pk>[0-9]+)/$', NewsItemDetail.as_view(), name='detailnews'),
+    #   url(r'^noticias/$', NewsItemList.as_view(), name='listnews'),
+        url(r'^noticias/v2/(?P<pk>[0-9]+)/$', NewsItemDetail.as_view(), name='detailnews'),
         url(r'^noticias/v2/nuevo$', NewsItemCreation.as_view(), name='newnews'),
         url(r'^noticias/v2/(?P<pk>[0-9]+)/editar/$', NewsItemUpdate.as_view(), name='editnews'),
         url(r'^noticias/v2/borrar/(?P<pk>[0-9]+)/$', NewsItemDelete.as_view(), name='deletenews'),
         url(r'^eventos/$', views.event_list, name='eventos'),
-        url(r'^eventos/$', EventList.as_view(), name='listevent'),
+        #url(r'^eventos/$', EventList.as_view(), name='listevent'),
         url(r'^eventos/(?P<pk>[0-9]+)/$', EventDetail.as_view(), name='detailevent'),
         url(r'^eventos/nuevo$', EventCreation.as_view(), name='newevent'),
         url(r'^eventos/editar/(?P<pk>[0-9]+)/$', EventUpdate.as_view(), name='editevent'),
         url(r'^eventos/borrar/(?P<pk>[0-9]+)/$', EventDelete.as_view(), name='deleteevent'),
 #noticias v1
-        url(r'^noticias/$', views.newsitem_list, name='noticias'),
         url(r'^noticias/v1/nuevo$', views.newsitem_create, name='1newnews'),
+        url(r'^noticias/v1/(?P<pk>[0-9]+)/$', NewsItemDetail.as_view(), name='1detailnews'),
         url(r'^noticias/v1/(?P<pk>[0-9]+)/editar$', views.newsitem_update, name='v1editnews'),
-        url(r'^noticias/v1/(?P<pk>[0-9]+)/borrar$', views.newsitem_delete, name='v1deletenews'),
+        url(r'^noticias/v1/borrar/(?P<pk>[0-9]+)/$', views.newsitem_delete, name='v1deletenews'),
+#api newsitem
+        url(r'^apinews/$', views.NewsItemapi.as_view(), name="apiNewsItem"),
+        url(r'^apinews/(?P<pk>[0-9]+)/$', views.NewsItemDetailapi.as_view(), name="apiDetailNewsItem"),
+#api event
+        url(r'^apievent/$', views.EventListapi.as_view(), name="apiEvent"),
+        url(r'^apievent/(?P<pk>[0-9]+)/$', views.EventDetailapi.as_view(), name="apiDetailEvent"),
 ]
+urlpatterns = format_suffix_patterns(urlpatterns)

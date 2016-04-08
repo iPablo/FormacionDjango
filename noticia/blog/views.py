@@ -11,13 +11,9 @@ from django.shortcuts import render
 from django.utils import timezone
 from .models import Event
 from django.shortcuts import redirect, get_object_or_404
-from django.forms import ModelForm
-
-
-class NewsItemForm(ModelForm):
-    class Meta:
-        model = NewsItem
-        fields = ['title', 'description', 'publish_date']
+from .forms import NewsItemForm, EventForm
+from .serializers import NewsItemSerializer, EventSerializer
+from rest_framework import generics
 
 
 def newsitem_list1(request, template_name='blog/newsitem_list.html'):
@@ -31,7 +27,7 @@ def newsitem_create(request, template_name='blog/newsitem_form.html'):
     form = NewsItemForm(request.POST or None)
     if form.is_valid():
         form.save()
-        return redirect('blog:listnews')
+        return redirect('blog:noticias')
     return render(request, template_name, {'form': form})
 
 
@@ -40,7 +36,7 @@ def newsitem_update(request, pk, template_name='blog/newsitem_form.html'):
     form = NewsItemForm(request.POST or None, instance=post)
     if form.is_valid():
         form.save()
-        return redirect('blog:listnews')
+        return redirect('blog:noticias')
     return render(request, template_name, {'form': form})
 
 
@@ -48,7 +44,7 @@ def newsitem_delete(request, pk, template_name='blog/newsitem_confirm_delete.htm
     post = get_object_or_404(NewsItem, pk=pk)
     if request.method == 'POST':
         post.delete()
-        return redirect('blog:listnews')
+        return redirect('blog:noticias')
     return render(request, template_name, {'object': post})
 
 
@@ -77,19 +73,20 @@ class NewsItemDetail(DetailView):
 
 class NewsItemCreation(CreateView):
         model = NewsItem
-        success_url = reverse_lazy('blog:listnews')
-        fields = ['title', 'description', 'publish_date']
+        success_url = reverse_lazy('blog:noticias')
+        #ields = ['title', 'description', 'publish_date']
+        form_class = NewsItemForm
 
 
 class NewsItemUpdate(UpdateView):
         model = NewsItem
-        success_url = reverse_lazy('blog:listnews')
+        success_url = reverse_lazy('blog:noticias')
         fields = ['title', 'description', 'publish_date']
 
 
 class NewsItemDelete(DeleteView):
         model = NewsItem
-        success_url = reverse_lazy('blog:listnews')
+        success_url = reverse_lazy('blog:noticias')
 
 
 def event_list(request):
@@ -107,16 +104,40 @@ class EventDetail(DetailView):
 
 class EventCreation(CreateView):
         model = Event
-        success_url = reverse_lazy('blog:listevent')
-        fields = ['title', 'description', 'start_date', 'end_date']
+        success_url = reverse_lazy('blog:eventos')
+        """fields = ['title', 'description', 'start_date', 'end_date']"""
+        form_class = EventForm
 
 
 class EventUpdate(UpdateView):
         model = Event
-        success_url = reverse_lazy('blog:listevent')
+        success_url = reverse_lazy('blog:eventos')
         fields = ['title', 'description', 'start_date', 'end_date']
 
 
 class EventDelete(DeleteView):
         model = Event
-        success_url = reverse_lazy('blog:listevent')
+        success_url = reverse_lazy('blog:eventos')
+
+
+class NewsItemapi(generics.ListCreateAPIView):
+
+    queryset = NewsItem.objects.all()
+    serializer_class = NewsItemSerializer
+
+
+class NewsItemDetailapi(generics.RetrieveUpdateDestroyAPIView):
+
+    queryset = NewsItem.objects.all()
+    serializer_class = NewsItemSerializer
+
+
+class EventListapi(generics.ListCreateAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+
+
+class EventDetailapi(generics.RetrieveUpdateDestroyAPIView):
+
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer

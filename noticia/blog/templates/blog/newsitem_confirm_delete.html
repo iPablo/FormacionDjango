@@ -9,7 +9,7 @@
 <form method="post">{% csrf_token %}
     ¿Estás seguro que deseas borrar la "{{ object }}"?
     <input type="submit" value="Borrar" />
-      <a href="{% url 'blog:listnews' %}">Regresar</a>
+      <a href="{% url 'blog:noticias' %}">Regresar</a>
 </form>
 </form>
 </body>

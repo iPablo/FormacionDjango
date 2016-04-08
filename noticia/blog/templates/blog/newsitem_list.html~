@@ -9,15 +9,17 @@
 </head>
 <body>
   <div class="page-header">
-      <h1><a href="/">Noticias</a></h1>
+    <a href="{% url 'blog:newnews' %}" class="top-menu"><span class="glyphicon glyphicon-plus">Noticias</span></a>
+    <h1>{{ newsitem.title }}</h1>
+      <h1>Noticias</h1>
   </div>
-<p>hola</p>
    {% for post in NewsItem %}
        <div>
-           <h1><a href="">{{ post.title }}</a></h1>
+           <h1><a href="{% url 'blog:detailnews' post.id %}">{{ post.title }}</a></h1>
            <p>{{ post.description}}</p>
            <p>Publicación de la noticia: {{ post.publish_date }}</p>
-       </div>
+  </div>
    {% endfor %}
+  <a href="{% url 'blog:index' %}">Regresar</a>
 </body>
 </html>
