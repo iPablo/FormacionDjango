@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.core.urlresolvers import reverse
 from .models import NewsItem, Event
 from .views import NewsItemForm, EventForm
-from rest_framework.test import APITestCase, APIClient
+from rest_framework.test import APITestCase
 from django.contrib.auth.models import User
 from rest_framework import status
 
@@ -111,23 +111,16 @@ class NewsItemEventTest(TestCase):
 
 class NewsItemListAPITestCase(APITestCase):
 
-    def addUser(self):
-            User.objects.create_user(username='admin', password='proyecto', is_superuser=True)
-            return User.objects.get(username='admin')
 
     def addNewsItem(self):
-            form = NewsItemForm(data={'owner': self.addUser().id, 'title': "titulo", 'description': "descripcion", 'publish_date': timezone.now()})
+            form = NewsItemForm(data={'title': "titulo", 'description': "descripcion", 'publish_date': timezone.now()})
             form.is_valid()
             form.save()
             return NewsItem.objects.get(title='titulo')
 
     def test_create(self):
-        user = self.addUser()
-        c = APIClient()
         url = reverse('blog:apiNewsItem')
-        data = {'owner': user.id, 'title': "prueba", 'description': "prueba", 'publish_date': timezone.now()}
-        c.force_authenticate(user=user)
-        response = c.post(url, data, format='json')
+        data = {'title': "prueba", 'description': "prueba", 'publish_date': timezone.now()}
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(NewsItem.objects.get().title, 'prueba')
 
@@ -139,30 +132,21 @@ class NewsItemListAPITestCase(APITestCase):
         self.addNewsItem()
         x = NewsItem.objects.get(title='titulo')
         url = reverse('blog:apiDetailNewsItem', kwargs={'pk': x.id})
-        response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(NewsItem.objects.get().title, 'titulo')
 
 
 class EventAPITestCase(APITestCase):
 
-    def addUser(self):
-            User.objects.create_user(username='admin', password='proyecto', is_superuser=True)
-            return User.objects.get(username='admin')
-
     def addEvent(self):
-        form = EventForm(data={'owner': self.addUser().id, 'title': 'titulo', 'description': 'descripcion', 'start_date': timezone.now(), 'end_date': timezone.now()})
+        form = EventForm(data={'title': 'titulo', 'description': 'descripcion', 'start_date': timezone.now(), 'end_date': timezone.now()})
         form.is_valid()
         form.save()
         return Event.objects.get(title="titulo")
 
     def test_create(self):
-        user = self.addUser()
-        c = APIClient()
         url = reverse('blog:apiEvent')
-        data = {'owner': user.id, 'title': 'prueba', 'description': 'prueba', 'start_date': timezone.now(), 'end_date': timezone.now()}
-        c.force_authenticate(user=user)
-        response = c.post(url, data, format='json')
+        data = {'title': 'prueba', 'description': 'prueba', 'start_date': timezone.now(), 'end_date': timezone.now()}
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Event.objects.get().title, 'prueba')
 
@@ -174,6 +158,5 @@ class EventAPITestCase(APITestCase):
         self.addEvent()
         x = Event.objects.get(title='titulo')
         url = reverse('blog:apiDetailEvent', kwargs={'pk': x.id})
-        response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Event.objects.get().title, 'titulo')
