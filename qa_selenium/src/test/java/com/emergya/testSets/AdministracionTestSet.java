@@ -73,19 +73,16 @@ public class AdministracionTestSet extends DefaultTestSet {
             administracionPage.loginAsAdmin();
             this.isTitleDisplayed();
 
-            administracionPage.clickButtonCreateEvent();
-            this.formCreateEventDisplayed();
-
-            administracionPage.formCreateEvent();
+            administracionPage.createEvent();
             this.alertCreateEventDisplayed();
 
-            administracionPage.formDeleteEvent();
+            administracionPage.deleteEvent();
             this.alertDeleteEventDisplayed();
 
-            administracionPage.formCreateNewsItem();
+            administracionPage.createNewsItem();
             this.alertCreateEventDisplayed();
 
-            administracionPage.formDeleteNewsItem();
+            administracionPage.deleteNewsItem();
             this.alertDeleteEventDisplayed();
 
             administracionPage.logout();

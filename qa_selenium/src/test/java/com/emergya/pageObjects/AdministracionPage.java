@@ -68,12 +68,73 @@ public class AdministracionPage extends BasePageObject {
     }
 
     /**
-     * 
+     * Create Event
      */
-    public void clickButtonCreateEvent() {
+    public void createEvent() {
         log.info("[log-" + this.getClass().getSimpleName()
-                + "]- Start createEvent -[" + this.getClass().getSimpleName()
+                + "]- Start CreateEvent -[" + this.getClass().getSimpleName()
                 + "- method]");
+        this.clickButtonCreateEvent();
+        this.setTitle("Test title");
+        this.setDescription("Test Description");
+        this.setOwner();
+        this.setStartDateNewsItem();
+        this.setStartTimeNewsItem();
+        this.setEndDateNewsItem();
+        this.setEndTimeNewsItem();
+        this.save();
+        log.info("[log-" + this.getClass().getSimpleName()
+                + "]- End CreateEvent -[" + this.getClass().getSimpleName()
+                + "- method]");
+    }
+
+    public void setTitle(String x) {
+        if (this.getElementById("id_title").isDisplayed()) {
+            this.getElementById("id_title").sendKeys(x);
+        }
+    }
+
+    public void setDescription(String x) {
+        if (this.getElementById("id_description").isDisplayed()) {
+            this.getElementById("id_description").sendKeys(x);
+        }
+    }
+
+    public void setOwner() {
+        driver.clickOutWithMouse(By.id("id_owner"));
+    }
+
+    public void setStartDateNewsItem() {
+        if (this.getElementByXPath("start_date").isDisplayed()) {
+            this.getElementByXPath("start_date").click();
+        }
+    }
+
+    public void setStartTimeNewsItem() {
+        if (this.getElementByXPath("start_time").isDisplayed()) {
+            this.getElementByXPath("start_time").click();
+        }
+    }
+
+    public void setEndDateNewsItem() {
+        if (this.getElementByXPath("end_date").isDisplayed()) {
+            this.getElementByXPath("end_date").click();
+        }
+    }
+
+    public void setEndTimeNewsItem() {
+        if (this.getElementByXPath("end_time").isDisplayed()) {
+            this.getElementByXPath("end_time").click();
+        }
+    }
+
+    public void save() {
+        if (this.getElementByName("save_event").isDisplayed()) {
+            this.getElementByName("save_event").click();
+        }
+    }
+
+    public void clickButtonCreateEvent() {
         if (this.getElementByXPath("buttonCreateEvent").isDisplayed()) {
             this.getElementByXPath("buttonCreateEvent").click();
             this.getElementByXPath("buttonAddEvent").click();
@@ -82,62 +143,111 @@ public class AdministracionPage extends BasePageObject {
     }
 
     /**
-     * 
+     * Delete Event
      */
-    public void formCreateEvent() {
+    public void deleteEvent() {
         log.info("[log-" + this.getClass().getSimpleName()
-                + "]- Start formCreateEvent -["
-                + this.getClass().getSimpleName() + "- method]");
+                + "]- Start DeleteEvent -[" + this.getClass().getSimpleName()
+                + "- method]");
+        this.goToEvent();
+        this.buttonDeleteEvent();
+        this.confirmDeleteEvent();
+        log.info("[log-" + this.getClass().getSimpleName()
+                + "]- End DeleteEvent -[" + this.getClass().getSimpleName()
+                + "- method]");
+    }
 
-        this.getElementById("id_title").sendKeys("Test title");
-        this.getElementById("id_description").sendKeys("Test description");
-        driver.clickOutWithMouse(By.id("id_owner"));
-        // driver.clickOutWithMouse(By.xpath(".//*[@id='id_owner']/option[1]"));
-        this.getElementByXPath("start_date").click();
-        this.getElementByXPath("start_time").click();
-        this.getElementByXPath("end_date").click();
-        this.getElementByXPath("end_time").click();
-        this.getElementByName("save_event").click();
+    public void goToEvent() {
+        if (this.getElementByXPath("goToEvent").isDisplayed()) {
+            this.getElementByXPath("goToEvent").click();
+        }
+    }
+
+    public void buttonDeleteEvent() {
+        if (this.getElementByXPath("delete_event").isDisplayed()) {
+            this.getElementByXPath("delete_event").click();
+        }
+    }
+
+    public void confirmDeleteEvent() {
+        if (this.getElementByXPath("button_delete_event").isDisplayed()) {
+            this.getElementByXPath("button_delete_event").click();
+        }
     }
 
     /**
-     * 
+     * Create NewsItem
      */
-    public void formDeleteEvent() {
+    public void createNewsItem() {
         log.info("[log-" + this.getClass().getSimpleName()
-                + "]- Start formDeleteEvent -["
-                + this.getClass().getSimpleName() + "- method]");
+                + "]- Start CreateNewsItem -[" + this.getClass().getSimpleName()
+                + "- method]");
 
-        this.getElementByXPath("goToEvent").click();
-        this.getElementByXPath("delete_event").click();
-        this.getElementByXPath("button_delete_event").click();
+        this.goToNewsItem();
+        this.buttonAddNewsItem();
+        this.setTitle("Test Title");
+        this.setDescription("Test Description");
+        this.setOwner();
+        this.setPublishDate();
+        this.setPublishTime();
+        this.save();
+
+        log.info("[log-" + this.getClass().getSimpleName()
+                + "]- End CreateNewsItem -[" + this.getClass().getSimpleName()
+                + "- method]");
+
     }
 
-    /**
-     * 
-     */
-    public void formCreateNewsItem() {
-        log.info("[log-" + this.getClass().getSimpleName()
-                + "]- Start formCreateNewsItem -["
-                + this.getClass().getSimpleName() + "- method]");
-
+    public void goToNewsItem() {
         driver.get("localhost:8000/admin/NoticiasEventos/newsitem/");
-        this.getElementByXPath("buttonAddNewsItem").click();
-        this.getElementById("id_title").sendKeys("Test title");
-        this.getElementById("id_description").sendKeys("Test description");
-        driver.clickOutWithMouse(By.id("id_owner"));
-        this.getElementByXPath("publish_date").click();
-        this.getElementByXPath("publish_time").click();
-        this.getElementByName("save_newsItem").click();
     }
 
-    public void formDeleteNewsItem() {
+    public void buttonAddNewsItem() {
+        if (this.getElementByXPath("buttonAddNewsItem").isDisplayed()) {
+            this.getElementByXPath("buttonAddNewsItem").click();
+        }
+    }
+
+    public void setPublishDate() {
+        if (this.getElementByXPath("publish_date").isDisplayed()) {
+            this.getElementByXPath("publish_date").click();
+        }
+    }
+
+    public void setPublishTime() {
+        if (this.getElementByXPath("publish_time").isDisplayed()) {
+            this.getElementByXPath("publish_time").click();
+        }
+    }
+
+    public void deleteNewsItem() {
         log.info("[log-" + this.getClass().getSimpleName()
-                + "]- Start formDeleteNewsItem -["
-                + this.getClass().getSimpleName() + "- method]");
-        this.getElementByXPath("goToNewsItem").click();
-        this.getElementByXPath("delete_newsItem").click();
-        this.getElementByXPath("button_delete_newsItem").click();
+                + "]- Start DeleteNewsItem -[" + this.getClass().getSimpleName()
+                + "- method]");
+        this.buttonGoToNewsItem();
+        this.buttonNewsItem();
+        this.confirmButtonNewsItem();
+        log.info("[log-" + this.getClass().getSimpleName()
+                + "]- End DeleteNewsItem -[" + this.getClass().getSimpleName()
+                + "- method]");
+    }
+
+    public void buttonGoToNewsItem() {
+        if (this.getElementByXPath("goToNewsItem").isDisplayed()) {
+            this.getElementByXPath("goToNewsItem").click();
+        }
+    }
+
+    public void buttonNewsItem() {
+        if (this.getElementByXPath("delete_newsItem").isDisplayed()) {
+            this.getElementByXPath("delete_newsItem").click();
+        }
+    }
+
+    public void confirmButtonNewsItem() {
+        if (this.getElementByXPath("button_delete_newsItem").isDisplayed()) {
+            this.getElementByXPath("button_delete_newsItem").click();
+        }
     }
 
     public void logout() {
@@ -145,5 +255,7 @@ public class AdministracionPage extends BasePageObject {
                 "[log-" + this.getClass().getSimpleName() + "]- Start logout -["
                         + this.getClass().getSimpleName() + "- method]");
         this.getElementByXPath("logout").click();
+        log.info("[log-" + this.getClass().getSimpleName() + "]- End logout -["
+                + this.getClass().getSimpleName() + "- method]");
     }
 }
