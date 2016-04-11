@@ -4,7 +4,6 @@ from django.core.urlresolvers import reverse
 from .models import NewsItem, Event
 from .views import NewsItemForm, EventForm
 from rest_framework.test import APITestCase
-from django.contrib.auth.models import User
 from rest_framework import status
 
 
