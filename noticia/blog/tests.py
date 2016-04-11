@@ -110,7 +110,6 @@ class NewsItemEventTest(TestCase):
 
 class NewsItemListAPITestCase(APITestCase):
 
-
     def addNewsItem(self):
             form = NewsItemForm(data={'title': "titulo", 'description': "descripcion", 'publish_date': timezone.now()})
             form.is_valid()
@@ -118,8 +117,8 @@ class NewsItemListAPITestCase(APITestCase):
             return NewsItem.objects.get(title='titulo')
 
     def test_create(self):
-        url = reverse('blog:apiNewsItem')
         data = {'title': "prueba", 'description': "prueba", 'publish_date': timezone.now()}
+        response = self.client.post(reverse('blog:apiNewsItem'), data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(NewsItem.objects.get().title, 'prueba')
 
@@ -130,9 +129,10 @@ class NewsItemListAPITestCase(APITestCase):
     def test_update_delete(self):
         self.addNewsItem()
         x = NewsItem.objects.get(title='titulo')
-        url = reverse('blog:apiDetailNewsItem', kwargs={'pk': x.id})
+        update = {'title': 'clave', 'description': 'clave', 'publish_date': timezone.now()}
+        response = self.client.patch(reverse('blog:apiDetailNewsItem', kwargs={'pk': x.id}), update, format="json")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(NewsItem.objects.get().title, 'titulo')
+        self.assertEqual(NewsItem.objects.get().title, 'clave')
 
 
 class EventAPITestCase(APITestCase):
@@ -144,8 +144,8 @@ class EventAPITestCase(APITestCase):
         return Event.objects.get(title="titulo")
 
     def test_create(self):
-        url = reverse('blog:apiEvent')
         data = {'title': 'prueba', 'description': 'prueba', 'start_date': timezone.now(), 'end_date': timezone.now()}
+        response = self.client.post(reverse('blog:apiEvent'), data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Event.objects.get().title, 'prueba')
 
@@ -156,6 +156,8 @@ class EventAPITestCase(APITestCase):
     def test_update_delete(self):
         self.addEvent()
         x = Event.objects.get(title='titulo')
-        url = reverse('blog:apiDetailEvent', kwargs={'pk': x.id})
+        update = {'title': 'prueba', 'description': 'prueba', 'start_date': timezone.now(), 'end_date': timezone.now()}
+        response = self.client.patch(reverse('blog:apiDetailEvent', kwargs={'pk': x.id}), update, format="json")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(Event.objects.get().title, 'titulo')
+        self.assertEqual(Event.objects.get().title, 'prueba')
+   
