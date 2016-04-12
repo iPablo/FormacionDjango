@@ -29,9 +29,37 @@ public class NewsTestSet extends DefaultTestSet {
     }
 
     @Test(description = "newsPage")
-    public void newsPage() throws InterruptedException {
+    public void createNewsItem() throws InterruptedException {
         log.info("[log-TestSet] " + this.getClass().getName()
-                + "- Start accessToPrivateFolderWithoutLogin test");
+                + "- Start Create News Item - ");
+        newspage = new NewsPage(driver);
+
+        try {
+            Thread.sleep(1000);
+
+            // Create NewsItem
+            newspage.createNewsItem();
+            this.isItemDisplayed();
+
+            // Update NewsItem
+            // newspage.updateNewsItem();
+            // this.isItemDisplayed();
+
+            // Delete NewsItem
+            newspage.deleteNewsItem();
+            this.isItemDisplayed();
+
+            Thread.sleep(5000);
+
+        } finally {
+
+        }
+    }
+
+    @Test(description = "newsPage")
+    public void updateNewsItem() throws InterruptedException {
+        log.info("[log-TestSet] " + this.getClass().getName()
+                + "- Start Create News Item - ");
         newspage = new NewsPage(driver);
 
         try {
@@ -44,6 +72,34 @@ public class NewsTestSet extends DefaultTestSet {
             // Update NewsItem
             newspage.updateNewsItem();
             this.isItemDisplayed();
+
+            // Delete NewsItem
+            newspage.deleteNewsItem();
+            this.isItemDisplayed();
+
+            Thread.sleep(5000);
+
+        } finally {
+
+        }
+    }
+
+    @Test(description = "newsPage")
+    public void deleteNewsItem() throws InterruptedException {
+        log.info("[log-TestSet] " + this.getClass().getName()
+                + "- Start Create News Item - ");
+        newspage = new NewsPage(driver);
+
+        try {
+            Thread.sleep(1000);
+
+            // Create NewsItem
+            newspage.createNewsItem();
+            this.isItemDisplayed();
+
+            // Update NewsItem
+            // newspage.updateNewsItem();
+            // this.isItemDisplayed();
 
             // Delete NewsItem
             newspage.deleteNewsItem();

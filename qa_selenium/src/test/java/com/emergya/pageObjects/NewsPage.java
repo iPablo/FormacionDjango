@@ -69,13 +69,13 @@ public class NewsPage extends BasePageObject {
 
     public void setTitle(String x) {
         if (this.getElementById("id_title").isDisplayed()) {
-            this.getElementById("id_title").sendKeys("x");
+            this.getElementById("id_title").sendKeys(x);
         }
     }
 
     public void setDescription(String x) {
         if (this.getElementById("id_description").isDisplayed()) {
-            this.getElementById("id_description").sendKeys("x");
+            this.getElementById("id_description").sendKeys(x);
         }
     }
 
@@ -96,16 +96,21 @@ public class NewsPage extends BasePageObject {
         log.info("[log-" + this.getClass().getSimpleName()
                 + "]- Start NewsItem -[" + this.getClass().getSimpleName()
                 + "- method]");
-
-        this.getElementByXPath("buttonUpdate").click();
-        this.getElementById("id_title").sendKeys("Test Updated QA");
-        this.getElementById("id_description").sendKeys("Test Updated QA");
-        driver.clickOutWithMouse(By.id("id_owner"));
-        this.getElementByXPath("save").click();
+        this.buttonUpdate();
+        this.setTitle("Update");
+        this.setDescription("Update");
+        this.setOwner();
+        this.save();
 
         log.info(
                 "[log-" + this.getClass().getSimpleName() + "]- End NewsItem -["
                         + this.getClass().getSimpleName() + "- method]");
+    }
+
+    public void buttonUpdate() {
+        if (this.getElementByXPath("buttonUpdate").isDisplayed()) {
+            this.getElementByXPath("buttonUpdate").click();
+        }
     }
 
     /**
@@ -115,13 +120,24 @@ public class NewsPage extends BasePageObject {
         log.info("[log-" + this.getClass().getSimpleName()
                 + "]- Start NewsItem -[" + this.getClass().getSimpleName()
                 + "- method]");
-
-        this.getElementByXPath("buttonDelete").click();
-        this.getElementByXPath("buttonConfirmDelete").click();
+        this.buttonDelete();
+        this.buttonConfirmDelete();
 
         log.info(
                 "[log-" + this.getClass().getSimpleName() + "]- End NewsItem -["
                         + this.getClass().getSimpleName() + "- method]");
+    }
+
+    public void buttonDelete() {
+        if (this.getElementByXPath("buttonDelete").isDisplayed()) {
+            this.getElementByXPath("buttonDelete").click();
+        }
+    }
+
+    public void buttonConfirmDelete() {
+        if (this.getElementByXPath("buttonConfirmDelete").isDisplayed()) {
+            this.getElementByXPath("buttonConfirmDelete").click();
+        }
     }
 
 }

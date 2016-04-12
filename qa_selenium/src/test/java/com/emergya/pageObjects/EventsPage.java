@@ -47,19 +47,61 @@ public class EventsPage extends BasePageObject {
      * Create Event
      */
     public void createEvent() {
-        log.info("[log-" + this.getClass().getSimpleName() + "]- Start Event -["
-                + this.getClass().getSimpleName() + "- method]");
+        log.info("[log-" + this.getClass().getSimpleName()
+                + "]- Start Create Event -[" + this.getClass().getSimpleName()
+                + "- method]");
 
-        this.getElementByXPath("buttonAddItem").click();
-        this.getElementById("id_title").sendKeys("Test QA");
-        this.getElementById("id_description").sendKeys("Test QA");
-        this.getElementById("id_start_date").sendKeys("2016-04-11 10:00");
-        this.getElementById("id_end_date").sendKeys("2016-04-12 10:00");
+        this.buttonAddItem();
+        this.setTitle("Test QA");
+        this.setDescription("Test QA");
+        this.setStartDate("2016-04-12 10:00");
+        this.setEndDate("2016-04-12 10:00");
+        this.setOwner();
+        this.save();
+
+        log.info("[log-" + this.getClass().getSimpleName()
+                + "]- End Create Event -[" + this.getClass().getSimpleName()
+                + "- method]");
+    }
+
+    public void buttonAddItem() {
+        if (this.getElementByXPath("buttonAddItem").isDisplayed()) {
+            this.getElementByXPath("buttonAddItem").click();
+        }
+    }
+
+    public void setTitle(String x) {
+        if (this.getElementById("id_title").isDisplayed()) {
+            this.getElementById("id_title").sendKeys(x);
+        }
+    }
+
+    public void setDescription(String x) {
+        if (this.getElementById("id_description").isDisplayed()) {
+            this.getElementById("id_description").sendKeys(x);
+        }
+    }
+
+    public void setStartDate(String x) {
+        if (this.getElementById("id_start_date").isDisplayed()) {
+            this.getElementById("id_start_date").sendKeys(x);
+        }
+    }
+
+    public void setEndDate(String x) {
+        if (this.getElementById("id_end_date").isDisplayed()) {
+            this.getElementById("id_end_date").sendKeys(x);
+        }
+    }
+
+    public void setOwner() {
         driver.clickOutWithMouse(By.id("id_owner"));
-        this.getElementByXPath("save").click();
+    }
 
-        log.info("[log-" + this.getClass().getSimpleName() + "]- End Event -["
-                + this.getClass().getSimpleName() + "- method]");
+    public void save() {
+        if (this.getElementByXPath("save").isDisplayed()) {
+            this.getElementByXPath("save").click();
+        }
     }
 
     /**
@@ -67,18 +109,64 @@ public class EventsPage extends BasePageObject {
      */
     public void updateEvent() {
         log.info("[log-" + this.getClass().getSimpleName()
-                + "]- Start NewsItem -[" + this.getClass().getSimpleName()
+                + "]- Start Update Event -[" + this.getClass().getSimpleName()
                 + "- method]");
 
-        this.getElementByXPath("buttonUpdate").click();
-        this.getElementById("id_title").sendKeys("Test Updated QA");
-        this.getElementById("id_description").sendKeys("Test Updated QA");
-        this.getElementById("id_description").sendKeys("Test Updated QA");
-        driver.clickOutWithMouse(By.id("id_owner"));
-        this.getElementByXPath("save").click();
+        this.buttonUpdate();
+        this.setTitle("Test QA Update");
+        this.setDescription("Test QA Update");
+        this.setOwner();
+        this.save();
 
-        log.info(
-                "[log-" + this.getClass().getSimpleName() + "]- End NewsItem -["
-                        + this.getClass().getSimpleName() + "- method]");
+        log.info("[log-" + this.getClass().getSimpleName()
+                + "]- End Update Event -[" + this.getClass().getSimpleName()
+                + "- method]");
     }
+
+    public void buttonUpdate() {
+        for (int i = 1; i <= driver.findElements(By.name("events"))
+                .size(); i++) {
+            if (driver.findElements(By.name("events")).get(i).getText()
+                    .equals("Test QA")) {
+                i++;
+                String aux = "/html/body/div/div/div/table/tbody/tr[" + i
+                        + "]/td[5]/a";
+                driver.findElementByXPath(aux).click();
+            }
+        }
+
+        /*
+         * if (this.getElementByXPath("buttonUpdate").isDisplayed()) {
+         * this.getElementByXPath("buttonUpdate").click(); }
+         */
+    }
+
+    /**
+     * Delete Event
+     */
+    public void deleteEvent() {
+        log.info("[log-" + this.getClass().getSimpleName()
+                + "]- Start Delete Event -[" + this.getClass().getSimpleName()
+                + "- method]");
+
+        this.buttonDelete();
+        this.buttonConfirmDelete();
+
+        log.info("[log-" + this.getClass().getSimpleName()
+                + "]- End Delete Event -[" + this.getClass().getSimpleName()
+                + "- method]");
+    }
+
+    public void buttonDelete() {
+        if (this.getElementByXPath("buttonDelete").isDisplayed()) {
+            this.getElementByXPath("buttonDelete").click();
+        }
+    }
+
+    public void buttonConfirmDelete() {
+        if (this.getElementByXPath("buttonConfirmDelete").isDisplayed()) {
+            this.getElementByXPath("buttonConfirmDelete").click();
+        }
+    }
+
 }
