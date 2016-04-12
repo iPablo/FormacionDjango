@@ -112,8 +112,8 @@ class EventCreation(CreateView):
 class EventUpdate(UpdateView):
         model = Event
         success_url = reverse_lazy('blog:eventos')
-        fields = ['title', 'description', 'start_date', 'end_date']
-
+        """fields = ['title', 'description', 'start_date', 'end_date']"""
+        form_class = EventForm
 
 class EventDelete(DeleteView):
         model = Event
