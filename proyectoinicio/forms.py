@@ -1,5 +1,8 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from django import forms
-from .models import NewsItem, Event
+from .models import NewsItem, Event, Comment
 
 
 class NewsItemForm(forms.ModelForm):
@@ -7,7 +10,7 @@ class NewsItemForm(forms.ModelForm):
 
     class Meta:
         model = NewsItem
-        fields = ('title', 'description', 'publish_date','owner')
+        fields = ('title', 'description', 'publish_date', 'owner')
 
 
 class EventForm(forms.ModelForm):
@@ -17,3 +20,9 @@ class EventForm(forms.ModelForm):
     class Meta:
         model = Event
         fields = ('title', 'description', 'start_date', 'end_date', 'owner')
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ('author', 'text')

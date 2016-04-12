@@ -45,3 +45,16 @@ class Event(BaseNews):
 			self.end_date = self.start_date
 		diferencia = self.end_date - self.start_date
 		return diferencia.days
+
+
+class Comment(models.Model):
+	news = models.ForeignKey(NewsItem, on_delete=models.CASCADE)
+	author = models.CharField(max_length=20, default='Anonimo')
+	text = models.TextField()
+	rating = models.IntegerField(default=0)
+	votecounts = models.IntegerField(default=0)
+
+	def setRating(self, vote):
+		self.votecounts = self.votecounts + 1
+		self.rating = (self.rating + vote)/self.votecounts
+		return self.rating

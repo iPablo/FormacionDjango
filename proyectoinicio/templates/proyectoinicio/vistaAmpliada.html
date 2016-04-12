@@ -11,9 +11,8 @@
 <div class="jumbotron">
 	<h1 style="color: #A1D490; text-align: center; text-shadow: 2px 2px green">Ampliación</h1>
 </div>
-
 {% if noticia %}
-        <div class="panel {% if noticia.ha_pasado %}
+         <div class="panel {% if noticia.ha_pasado %}
                             panel-warning
                             {% else %}
                             panel-primary
@@ -44,10 +43,30 @@
             </ul>
         </div>
         </div>
+	{% if noticia.comment_set.all.count == 0 %}
+		<h4>Esta noticia no tiene comentarios aún</h4>  <a href="{% url 'proyectoinicio:comentar' noticia.id %} " style="color: white;"><button class="btn btn-success">Añadir comentario</button></a>
+		{% else %}
+		<h4>Comentarios</h4>  <a href="{% url 'proyectoinicio:comentar' noticia.id %} " style="color: white;"><button class="btn btn-success">Añadir comentario</button></a>
+		<div class="panel-group">
+		  {% for comentario in noticia.comment_set.all %}
+		   <div class="panel panel-info col-md-3">
+				<div class="panel-heading" style="text-align=left;">
+						<b>{{ comentario.author }}</b>
+				</div>
+				<div class="panel-body" style="text-align=right;">
+				    	<p> {{ comentario.text }}</p>
+				</div>
+				<div class="panel-footer">
+					Inserta los votos aqui
+				</div>
+			</div>
+		  {% endfor %}
+		  </div>
+	{% endif %}
+
 {% else %}
     <p>Esa noticia no existe.</p>
 {% endif %}
 </div>
-
 </body>
 </html>

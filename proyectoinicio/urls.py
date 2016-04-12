@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^v1/$', views.dameNoticias, name='noticias'),
     url(r'^eventos/$', views.EventsView.as_view(), name='eventos'),
     url(r'^todo/$', views.dameTodo, name='todo'),
+    url(r'^v2/ampliar/(?P<noticia_pk>[0-9]+)/comentar$', views.CommentCreate.as_view(), name='comentar'),
     url(r'^v1/ampliar/(?P<noticia_pk>[0-9]+)$', views.vistaNoticia, name='ampliar'),
     url(r'^v1/borrar/(?P<noticia_pk>[0-9]+)$', views.borraNoticia, name='borrar'),
     url(r'^v1/editar/(?P<noticia_pk>[0-9]+)$', views.editaNoticia, name='editar'),

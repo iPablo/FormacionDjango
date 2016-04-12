@@ -9,13 +9,13 @@
 <body>
 <div class="container">
 <div class="jumbotron">
-	<h1 style="color: #A1D490; text-align: center; text-shadow: 2px 2px green">Noticias Django</h1>
+	<h1 id="id_noticias_django" style="color: #A1D490; text-align: center; text-shadow: 2px 2px green">Noticias Django</h1>
 </div>
 <div class="panel panel-primary">
 	<div class="panel-body" style="text-align: center;">
 		<p>¿Quieres crear una noticia? Pulsa <a href="{% url 'proyectoinicio:crearNoticia' %}">¡aquí!</a></p>
-        <p>Si quieres probar en VBC, 
-         Pulsa <a href="{% url 'proyectoinicio:crearVBC' %}">¡aquí!</a></p>
+        <p>Si quieres probar en VBC,
+         Pulsa <a id="crearNoticia" href="{% url 'proyectoinicio:crearVBC' %}">¡aquí!</a></p>
 	</div>
 </div>
 {% if bloque_noticias %}

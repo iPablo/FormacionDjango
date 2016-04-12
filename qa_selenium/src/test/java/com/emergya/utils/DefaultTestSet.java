@@ -41,7 +41,9 @@ import com.emergya.drivers.EmergyaWebDriver;
 import com.emergya.pageObjects.AdministracionPage;
 import com.emergya.pageObjects.BasePageObject;
 import com.emergya.pageObjects.EmergyaMainPage;
+import com.emergya.pageObjects.EventsPage;
 import com.emergya.pageObjects.GoogleMainPage;
+import com.emergya.pageObjects.NewsItemPage;
 
 /**
  * TestNG after and before methods
@@ -54,6 +56,8 @@ public abstract class DefaultTestSet {
     protected GoogleMainPage googleMainPage;
     protected EmergyaMainPage emergyaMainPage;
     protected AdministracionPage administracionPage;
+    protected NewsItemPage newsItemPage;
+    protected EventsPage eventsPage;
     protected ScreenRecorder screenRecorder;
     protected String tcName = "";
     private String failedSuitePath = "src/test/resources/suites/emergyaFailedTest.xml";

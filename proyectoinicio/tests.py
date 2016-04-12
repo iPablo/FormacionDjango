@@ -58,11 +58,13 @@ class EventMethodTests(TestCase):
 		evento = Event(start_date=fecha_inicio, end_date=fecha_fin)
 		self.assertNotEqual(evento.dameDuracion(), -1)
 
+
 def create_user(admin):
 	"""
 	Nos va a crear un usuario que tendra o no permisos de administrador
 	"""
 	return User.objects.create(username="pepito", password="pepito", is_superuser=admin)
+
 
 def create_newsitemP(titulo, descripcion, dias):
 	"""
@@ -91,6 +93,11 @@ class NewsitemViewTests(TestCase):
 	def setUp(self):
 		# Todos los tests necesitan acceso a la request
 		self.factory = RequestFactory()
+
+	def test_create_comment(self):
+		"""
+		Test para ver si se ha añadido un comentario correctamente.
+		"""
 
 	def test_vista_con_todo(self):
 		"""
@@ -135,7 +142,7 @@ class NewsitemViewTests(TestCase):
 		self.assertQuerysetEqual(
 			response.context['bloque_noticias'],
 			['<NewsItem: prueba>']
-		)
+			)
 
 	def test_vista_ampliada_con_noticias_pasadas(self):
 		"""
@@ -156,14 +163,6 @@ class NewsitemViewTests(TestCase):
 		"""
 		response = self.client.get(reverse('proyectoinicio:ampliar', kwargs={'noticia_pk': 11010101010}))
 		self.assertEqual(response.status_code, 404)
-
-	def test_vista_borrado(self):
-		"""
-		La ventana de borrar tiene que encontrar el objeto.
-		"""
-		noticia = create_newsitemP(titulo="prueba", descripcion="prueba de pasado", dias=3)
-		response = self.client.get(reverse('proyectoinicio:borrar', kwargs={'noticia_pk': noticia.id}))
-		self.assertEqual(response.status_code, 302)
 
 	def test_vista_actualizada(self):
 		"""
