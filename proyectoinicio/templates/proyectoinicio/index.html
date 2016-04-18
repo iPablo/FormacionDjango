@@ -9,8 +9,16 @@
 <body>
 <div class="container">
 	<div class="jumbotron">
+		{% if user.is_active %}
+		<b>Usuario:</b> {{ user.username }} <a href="{% url 'proyectoinicio:logout' %}"><button class="btn btn-warning">Logout</button></a>
+		{% endif %}
 		<h1 style="color: #A1D490; text-align: center; text-shadow: 2px 2px green">Noticias Django</h1>
 	</div>
+	{% if not user.is_active %}
+	<p>
+		Si quieres acceder como usuario, pulsa <a href="{% url 'proyectoinicio:login' %}">aquí. </a>
+	</p>
+	{% endif %}
 		{% if messages %}
 		    {% for message in messages %}
 		    <h3{% if message.tags %} class="{{ message.tags }}"{% endif %}>

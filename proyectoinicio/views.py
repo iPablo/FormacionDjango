@@ -1,22 +1,48 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, get_object_or_404
-from .models import Event, NewsItem, Comment
+from .models import Event, NewsItem, Comment, Vote
 from django.core.urlresolvers import reverse
 from django.views import generic
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from rest_framework import generics
 from .serializers import NewsItemSerializer, EventSerializer, UserSerializer
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render_to_response
 from .forms import NewsItemForm, EventForm, CommentForm
 from django.contrib.auth.models import User
 from rest_framework import permissions
 from .permissions import IsOwnerOrReadOnly
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
+from django.template import RequestContext
+from django.db import IntegrityError
 
 
 def index(request):
     return render(request, 'proyectoinicio/index.html')
+
+
+def login_user(request):
+    logout(request)
+    username = password = ''
+    if request.POST:
+        username = request.POST['username']
+        password = request.POST['password']
+
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                messages.add_message(request, messages.SUCCESS, 'Bienvenido '+user.username, fail_silently=True)
+                return redirect('proyectoinicio:index')
+    return render_to_response('proyectoinicio/login.html', context_instance=RequestContext(request))
+
+
+def logout_user(request):
+    logout(request)
+    messages.add_message(request, messages.SUCCESS, 'Ha salido exitosamente del servidor', fail_silently=True)
+    return redirect('proyectoinicio:index')
 
 
 def dameNoticias(request):
@@ -43,6 +69,7 @@ def vistaNoticia(request, noticia_pk):
     return render(request, 'proyectoinicio/vistaAmpliada.html', contexto)
 
 
+@login_required(login_url='/login/')
 def borraNoticia(request, noticia_pk):
     noticia = get_object_or_404(NewsItem, pk=noticia_pk)
     noticia.delete()
@@ -50,6 +77,7 @@ def borraNoticia(request, noticia_pk):
     return redirect('proyectoinicio:index')
 
 
+@login_required(login_url='/login/')
 def editaNoticia(request, noticia_pk):
     noticia = get_object_or_404(NewsItem, pk=noticia_pk)
     form = NewsItemForm(request.POST or None, instance=noticia)
@@ -60,6 +88,7 @@ def editaNoticia(request, noticia_pk):
     return render(request, 'proyectoinicio/vistaEdicion.html', {'form': form})
 
 
+@login_required(login_url='/login/')
 def creaNoticia(request):
     form = NewsItemForm(request.POST or None)
     if form.is_valid():
@@ -67,6 +96,30 @@ def creaNoticia(request):
         messages.add_message(request, messages.SUCCESS, 'Enhorabuena, se ha creado tu noticia', fail_silently=True)
         return redirect('proyectoinicio:index')
     return render(request, 'proyectoinicio/creaNoticia.html', {'form': form})
+
+def votar(request, comentario_pk, vote):
+    try:
+        voto = vote
+        user = request.user
+        comentario = Comment.objects.get(pk=comentario_pk)
+        noticia_id = comentario.news.id
+        votar = Vote(user=user, comment=comentario, vote=voto)
+        votar.save()
+        return redirect('proyectoinicio:ampliarVBC', noticia_pk=noticia_id)
+    except(IntegrityError):
+        messages.add_message(request, messages.SUCCESS, 'Ya has votado.', fail_silently=True)
+        return redirect('proyectoinicio:index')
+
+
+class CommentDelete(generic.DeleteView):
+    model = Comment
+
+    def get_success_url(self):
+        comment_id = self.kwargs.get('pk')
+        comment = Comment.objects.get(pk=comment_id)
+        noticia_pk = comment.news.id
+        return reverse('proyectoinicio:ampliarVBC', kwargs={'noticia_pk': noticia_pk})
+
 
 
 class CommentCreate(generic.CreateView):
@@ -78,6 +131,8 @@ class CommentCreate(generic.CreateView):
 
     def form_valid(self, form):
         form.instance.news_id = self.kwargs.get('noticia_pk')
+        if self.request.user.is_active:  # Si es un usuario logueado, te cambia el campo.
+            form.instance.author = self.request.user
         return super(CommentCreate, self).form_valid(form)
 
 
@@ -128,7 +183,6 @@ class NoticiasCreate(SuccessMessageMixin, generic.CreateView):
     model = NewsItem
     template_name = "proyectoinicio/newsitem_create_form.html"
     form_class = NewsItemForm
-
 
     def get_success_url(self):
         return reverse('proyectoinicio:index')
@@ -203,6 +257,7 @@ class NewsItemDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = NewsItem.objects.all()
     serializer_class = NewsItemSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly,)
+
 
 class EventRESTList(generics.ListCreateAPIView):
     """

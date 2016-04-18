@@ -9,15 +9,18 @@
 <body>
 <div class="container">
 <div class="jumbotron">
+	{% if user.is_active %}
+	<b>Usuario:</b> {{ user.username }} <a href="{% url 'proyectoinicio:logout' %}"><button class="btn btn-warning">Logout</button></a>
+	{% endif %}
 	<h1 style="color: #A1D490; text-align: center; text-shadow: 2px 2px green">Edición</h1>
 </div>
 {% if noticia %}
   <form action="" method= "post" class="form-horizontal" role="form">
-  {% csrf_token %} 
+  {% csrf_token %}
 
   {{ form.as_p }}
     <input type="submit" value="Actualizar" class="btn btn-success" />
-    
+
   </form>
   <div style="text-align: right;"><a href="{% url 'proyectoinicio:index'%} " style="color: white;"><button class="btn btn-warning">Volver</button></a></div>
 {% else %}

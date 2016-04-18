@@ -9,6 +9,9 @@
 <body>
 <div class="container">
 <div class="jumbotron">
+	{% if user.is_active %}
+	<b>Usuario:</b> {{ user.username }} <a href="{% url 'proyectoinicio:logout' %}"><button class="btn btn-warning">Logout</button></a>
+	{% endif %}
 	<h1 style="color: #A1D490; text-align: center; text-shadow: 2px 2px green">Ampliación</h1>
 </div>
 {% if event %}

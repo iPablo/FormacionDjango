@@ -5,6 +5,8 @@ from django.conf.urls import include
 
 app_name = "proyectoinicio"
 urlpatterns = [
+    url(r'^login/$', views.login_user, name='login'),
+    url(r'^logout/$', views.logout_user, name='logout'),
     url(r'^$', views.index, name='index'),
     url(r'^v1/$', views.dameNoticias, name='noticias'),
     url(r'^eventos/$', views.EventsView.as_view(), name='eventos'),
@@ -13,6 +15,8 @@ urlpatterns = [
     url(r'^v1/ampliar/(?P<noticia_pk>[0-9]+)$', views.vistaNoticia, name='ampliar'),
     url(r'^v1/borrar/(?P<noticia_pk>[0-9]+)$', views.borraNoticia, name='borrar'),
     url(r'^v1/editar/(?P<noticia_pk>[0-9]+)$', views.editaNoticia, name='editar'),
+    url(r'^v2/ampliar/(?P<comentario_pk>[0-9]+)/votar/(?P<vote>[0-9]+)$', views.votar, name='vota'),
+    url(r'^borrar/(?P<pk>[0-9]+)$', views.CommentDelete.as_view(), name='borrarC'),
     url(r'^v1/crear/$', views.creaNoticia, name='crearNoticia'),
     url(r'^v2/$', views.NoticiasView.as_view(), name='noticiasVBC'),
     url(r'^v2/ampliar/(?P<noticia_pk>[0-9]+)$', views.NoticiasDetalleView.as_view(), name='ampliarVBC'),
