@@ -1,5 +1,5 @@
 """Views.py"""
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response, redirect
 from .models import NewsItem, Event
 from .forms import NewsItemForm, EventForm
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
@@ -8,7 +8,8 @@ from .serializers import NewsItemSerializer, EventSerializer, UserSerializer
 from rest_framework import generics, permissions
 from django.contrib.auth.models import User
 from .permissions import IsOwnerOrReadOnly
-
+from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
+from pure_pagination.mixins import PaginationMixin
 # API
 
 
@@ -76,8 +77,15 @@ def index(request):
 
 def v1List(request):
     """v1List"""
-    result = NewsItem.objects.all()
-    return render(request, 'NoticiasEventos/v1List.html', {'result': result})
+    try:
+        page = request.GET.get('page', 1)
+    except PageNotAnInteger:
+        page = 1
+
+    p = Paginator(NewsItem.objects.all(), 2)
+    result = p.page(page)
+    return render_to_response('NoticiasEventos/v1List.html',
+                              {'result': result})
 
 
 def v1Create(request):
@@ -89,9 +97,7 @@ def v1Create(request):
             post = form.save()
             post.save()
 
-            result = NewsItem.objects.all()
-            return render(request, 'NoticiasEventos/v1List.html', {
-                'result': result})
+            return redirect('/v1/')
     else:
         form = NewsItemForm()
 
@@ -111,9 +117,7 @@ def v1Update(request, pk):
         x.publish_date = request.POST["publish_date"]
         x.save()
 
-        result = NewsItem.objects.all()
-        return render(request, 'NoticiasEventos/v1List.html', {
-            'result': result})
+        return redirect('/v1/')
 
 
 def v1Delete(request, pk):
@@ -121,15 +125,15 @@ def v1Delete(request, pk):
     x = NewsItem.objects.get(pk=pk)
     x.delete()
 
-    result = NewsItem.objects.all()
-    return render(request, 'NoticiasEventos/v1List.html', {'result': result})
+    return redirect('/v1/')
 
 # V2
 
 
-class v2List(ListView):
+class v2List(PaginationMixin, ListView):
     """Class v2List"""
 
+    paginate_by = 2
     model = NewsItem
     context_object_name = "result"
     template_name = "NoticiasEventos/v2List.html"
@@ -163,9 +167,10 @@ class v2Delete(DeleteView):
 # EVENT
 
 
-class EventList(ListView):
+class EventList(PaginationMixin, ListView):
     """Class EventList"""
 
+    paginate_by = 2
     model = Event
     context_object_name = "result"
     template_name = "NoticiasEventos/eventList.html"

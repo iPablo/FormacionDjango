@@ -118,18 +118,14 @@ class NewsItemTestCase(TestCase):
     """Class NewsItemTestCase"""
 
     def addUser(self):
-        User.objects.create_user(username='admin', password='passpass',
-                                 is_superuser=True)
-        return User.objects.get(username='admin')
+        return User.objects.create_user(username='admin', password='passpass',
+                                        is_superuser=True)
 
     def addNewsItem(self):
-        form = NewsItemForm(data={'title': 'test title',
-                            'description': 'test description',
-                                  'publish_date': timezone.now(),
-                                  'owner': self.addUser().id})
-        form.is_valid()
-        form.save()
-        return NewsItem.objects.get(title="test title")
+        return NewsItem.objects.create(title="test title",
+                                       description="test description",
+                                       publish_date=timezone.now(),
+                                       owner=self.addUser())
 
     def test_index(self):
         '''Comprueba el acceso a index'''
@@ -148,8 +144,6 @@ class NewsItemTestCase(TestCase):
         '''Comprueba el acceso a v1List'''
         response = self.client.get(reverse('NoticiasEventos:v1List'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "No items found.")
-        self.assertQuerysetEqual(response.context['result'], [])
 
     def test_index_v2List(self):
         '''Comprueba el acceso a v2List'''
@@ -158,73 +152,100 @@ class NewsItemTestCase(TestCase):
         self.assertContains(response, "No items found.")
         self.assertQuerysetEqual(response.context['result'], [])
 
-    def test_form_create_newsItem(self):
-        '''Comprueba la validacion del formulario y la creacion del objeto'''
-        form = NewsItemForm(data={'title': 'prueba title',
-                            'description': 'prueba description',
-                                  'publish_date': timezone.now(),
-                                  'owner': self.addUser().id})
-        self.assertTrue(form.is_valid())
-        form.save()
-        x = NewsItem.objects.get(title="prueba title")
-        self.assertTrue(x)
+    def test_v1Create(self):
+        '''Comprueba la creacion del objeto'''
+        antes = NewsItem.objects.count()
+        resp_get = self.client.get('/v1/Create/')
+        self.assertEqual(resp_get.status_code, 200)
 
-    def test_form_create_V1(self):
-        '''Comprueba el acceso a v1Create'''
-        response = self.client.get(reverse('NoticiasEventos:v1Create'))
-        self.assertEqual(response.status_code, 200)
+        usuario = self.addUser()
+        resp = self.client.post('/v1/Create/',
+                                {'title': 'test title',
+                                 'description': 'test description',
+                                 'publish_date': '2016-04-15 10:00',
+                                 'owner': usuario.id})
+        self.assertEqual(resp.status_code, 302)
+        despues = NewsItem.objects.count()
+        self.assertEqual(antes, despues - 1)
 
-    def test_form_create_V2(self):
-        '''Comprueba el acceso a v2Create'''
-        response = self.client.get(reverse('NoticiasEventos:v2Create'))
-        self.assertEqual(response.status_code, 200)
+    def test_v2Create(self):
+        '''Comprueba la creacion del objeto'''
+        antes = NewsItem.objects.count()
+        resp_get = self.client.get('/v2/Create/')
+        self.assertEqual(resp_get.status_code, 200)
 
-    def test_form_update_newsItemV1(self):
-        '''Comprueba el acceso a v1Update'''
-        x = self.addNewsItem()
-        response = self.client.get(reverse('NoticiasEventos:v1Update', kwargs={
-            'pk': x.id}))
-        self.assertEqual(response.status_code, 200)
+        usuario = self.addUser()
+        resp = self.client.post('/v1/Create/',
+                                {'title': 'test title',
+                                 'description': 'test description',
+                                 'publish_date': '2016-04-15 10:00',
+                                 'owner': usuario.id})
+        self.assertEqual(resp.status_code, 302)
+        despues = NewsItem.objects.count()
+        self.assertEqual(antes, despues - 1)
 
-    def test_form_update_newsItemV2(self):
-        '''Comprueba el acceso a v2Update'''
-        x = self.addNewsItem()
-        response = self.client.get(reverse('NoticiasEventos:v2Update', kwargs={
-            'pk': x.id}))
-        self.assertEqual(response.status_code, 200)
+    def test_v1Update(self):
+        '''Comprueba la actualizacion del objeto'''
+        aux = self.addNewsItem()
+        resp_get = self.client.get(reverse('NoticiasEventos:v1Update',
+                                           kwargs={'pk': aux.pk}))
+        self.assertEqual(resp_get.status_code, 200)
+        resp_post = self.client.post('/v1/Update/' + str(aux.pk) + '/',
+                                     {'title': 'cambio',
+                                      'description': 'test description',
+                                      'publish_date': str(timezone.now())})
+        self.assertEqual(resp_post.status_code, 302)
 
-    def test_delete_v1(self):
+    def test_v2Update(self):
+        '''Comprueba la actualizacion del objeto'''
+        aux = self.addNewsItem()
+        resp_get = self.client.get(reverse('NoticiasEventos:v2Update',
+                                           kwargs={'pk': aux.pk}))
+        self.assertEqual(resp_get.status_code, 200)
+        resp_post = self.client.post('/v2/Update/' + str(aux.pk) + '/',
+                                     {'title': 'cambio',
+                                      'description': 'test description',
+                                      'publish_date': '2015-10-10 10:00',
+                                      'owner': 1})
+        title = NewsItem.objects.get(id=aux.pk).title
+        self.assertEqual(resp_post.status_code, 302)
+        self.assertEqual(title, 'cambio')
+
+    def test_v1Delete(self):
         '''Comprueba si se borra correctamente'''
-        x = self.addNewsItem()
-        self.client.get(reverse('NoticiasEventos:v1Delete', kwargs={
-            'pk': x.id}))
-        self.assertQuerysetEqual(NewsItem.objects.all(), [])
+        num_elem_before = NewsItem.objects.count()
+        aux = self.addNewsItem()
+        resp = self.client.get(reverse('NoticiasEventos:v1Delete',
+                                       kwargs={'pk': aux.pk}))
+        self.assertEqual(resp.status_code, 302)
+        num_elem_after = NewsItem.objects.count()
+        self.assertEqual(num_elem_after, num_elem_before)
 
-    def test_delete_v2(self):
-        '''Comprueba v2Delete'''
-        x = self.addNewsItem()
-        response = self.client.get(reverse('NoticiasEventos:v2Delete', kwargs={
-            'pk': x.id}))
-        self.assertContains(response, "deseas borrar la noticia")
+    def test_v2Delete(self):
+        '''Comprueba si se borra correctamente'''
+        num_elem_before = NewsItem.objects.count()
+        aux = self.addNewsItem()
+        resp_get = self.client.get(reverse('NoticiasEventos:v2Delete',
+                                           kwargs={'pk': aux.pk}))
+        self.assertEqual(resp_get.status_code, 200)
+        resp_post = self.client.post(reverse('NoticiasEventos:v2Delete',
+                                             kwargs={'pk': aux.pk}))
+        self.assertEqual(resp_post.status_code, 302)
+        num_elem_after = NewsItem.objects.count()
+        self.assertEqual(num_elem_after, num_elem_before)
 
 
 class EventTestCase(TestCase):
     """Class EventTestCase"""
 
     def addUser(self):
-        User.objects.create_user(username='admin', password='passpass',
-                                 is_superuser=True)
-        return User.objects.get(username='admin')
+        return User.objects.create_user(username='admin', password='passpass',
+                                        is_superuser=True)
 
     def addEvent(self):
-        form = EventForm(data={'title': 'event title',
-                                        'description': 'event description',
-                                        'start_date': timezone.now(),
-                                        'end_date': timezone.now(),
-                                        'owner': self.addUser().id})
-        form.is_valid()
-        form.save()
-        return Event.objects.get(title="event title")
+        return Event.objects.create(title='event title',
+                                    description='event description',
+                                    owner=self.addUser())
 
     def test_str(self):
         x = Event(title="prueba")
@@ -241,36 +262,48 @@ class EventTestCase(TestCase):
         self.assertContains(response, "No items found.")
         self.assertQuerysetEqual(response.context['result'], [])
 
-    def test_form_create_event(self):
-        '''Comprueba la validacion del formulario y la creacion del objeto'''
-        form = EventForm(data={'title': 'simplePrueba',
-                                        'description': 'simplePrueba',
-                                        'start_date': timezone.now(),
-                                        'end_date': timezone.now(),
-                                        'owner': self.addUser().id})
-        self.assertTrue(form.is_valid())
-        form.save()
-        x = Event.objects.get(title="simplePrueba")
-        self.assertTrue(x)
+    def test_createEvent(self):
+        '''Comprueba la creacion del objeto'''
+        antes = Event.objects.count()
+        resp_get = self.client.get('/event/Create/')
+        self.assertEqual(resp_get.status_code, 200)
 
-    def test_create_event(self):
-        '''Comprueba el acceso a eventCreate'''
-        response = self.client.get(reverse('NoticiasEventos:v1Create'))
-        self.assertEqual(response.status_code, 200)
+        usuario = self.addUser()
+        resp = self.client.post('/event/Create/',
+                                {'title': 'test title',
+                                 'description': 'test description',
+                                 'owner': usuario.id})
+        self.assertEqual(resp.status_code, 302)
+        despues = Event.objects.count()
+        self.assertEqual(antes, despues - 1)
 
-    def test_update_event(self):
-        '''Comprueba el acceso a eventUpdate'''
-        x = self.addEvent()
-        response = self.client.get(reverse('NoticiasEventos:eventUpdate',
-                                   kwargs={'pk': x.id}))
-        self.assertEqual(response.status_code, 200)
+    def test_updateEvent(self):
+        '''Comprueba la actualizacion del objeto'''
+        aux = self.addEvent()
+        resp_get = self.client.get(reverse('NoticiasEventos:eventUpdate',
+                                           kwargs={'pk': aux.pk}))
+        self.assertEqual(resp_get.status_code, 200)
+        resp_post = self.client.post('/event/Update/' + str(aux.pk) + '/',
+                                     {'title': 'cambio',
+                                      'description': 'test description',
+                                      'owner': 1})
+        title = Event.objects.get(id=aux.pk).title
+        self.assertEqual(resp_post.status_code, 302)
+        self.assertEqual(title, 'cambio')
 
-    def test_delete_event(self):
-        '''Comprueba Delete Event'''
-        x = self.addEvent()
-        response = self.client.get(reverse('NoticiasEventos:eventDelete',
-                                   kwargs={'pk': x.id}))
-        self.assertContains(response, "deseas borrar el evento")
+    def test_deleteEvent(self):
+        '''Comprueba si se borra correctamente'''
+        num_elem_before = Event.objects.count()
+        aux = self.addEvent()
+        resp_get = self.client.get(reverse('NoticiasEventos:eventDelete',
+                                           kwargs={'pk': aux.pk}))
+        self.assertEqual(resp_get.status_code, 200)
+        # import ipdb; ipdb.set_trace()
+        resp_post = self.client.post(reverse('NoticiasEventos:eventDelete',
+                                             kwargs={'pk': aux.pk}))
+        self.assertEqual(resp_post.status_code, 302)
+        num_elem_after = Event.objects.count()
+        self.assertEqual(num_elem_after, num_elem_before)
 
 
 class BaseNewsTestCase(TestCase):
