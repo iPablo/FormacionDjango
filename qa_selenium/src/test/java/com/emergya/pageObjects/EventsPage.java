@@ -6,7 +6,7 @@ import org.openqa.selenium.WebElement;
 
 import com.emergya.drivers.EmergyaWebDriver;
 
-public class NewsPage extends BasePageObject {
+public class EventsPage extends BasePageObject {
 
     /**
      * Logger class initialization.
@@ -17,7 +17,7 @@ public class NewsPage extends BasePageObject {
      * Constructor method
      * @param driver selenium webdriver
      */
-    public NewsPage(EmergyaWebDriver driver) {
+    public EventsPage(EmergyaWebDriver driver) {
         super(driver);
         isReady();
     }
@@ -45,15 +45,15 @@ public class NewsPage extends BasePageObject {
      * @return
      */
 
-    public void doClickNews() {
+    public void doClickEvents() {
         log.info("[log-" + this.getClass().getSimpleName()
-                + "]- Start doClickNews -[" + this.getClass().getSimpleName()
+                + "]- Start doClickEvents -[" + this.getClass().getSimpleName()
                 + "- method]");
 
-        this.getElementByXPath("newsClases").click();
+        this.getElementByXPath("eventsClases").click();
 
         log.info("[log-pageObjects]" + this.getClass().getSimpleName()
-                + "]- End doClickNews method");
+                + "]- End doClickEvents method");
     }
 
     public void introducirCampoTitle(String title) {
@@ -80,6 +80,30 @@ public class NewsPage extends BasePageObject {
 
         log.info("[log-pageObjects]" + this.getClass().getSimpleName()
                 + "]- End introducirCampoDescription method");
+    }
+
+    public void clickStartDateMonth() {
+        driver.clickOutWithMouse(By.id("startDateMonth"));
+    }
+
+    public void clickStartDateDay() {
+        driver.clickOutWithMouse(By.id("startDateDay"));
+    }
+
+    public void clickStartDateYear() {
+        driver.clickOutWithMouse(By.id("startDateYear"));
+    }
+
+    public void clickFinishDateMonth() {
+        driver.clickOutWithMouse(By.id("finishDateMonth"));
+    }
+
+    public void clickFinishDateDay() {
+        driver.clickOutWithMouse(By.id("finishDateDay"));
+    }
+
+    public void clickFinishDateYear() {
+        driver.clickOutWithMouse(By.id("finishDateYear"));
     }
 
     public void doClickOnCreate() {
@@ -140,7 +164,7 @@ public class NewsPage extends BasePageObject {
     public WebElement search(String titulo1, String titulo2) {
         WebElement result = null;
         try {
-            for (WebElement x : driver.findElements(By.className("news"))) {
+            for (WebElement x : driver.findElements(By.className("events"))) {
                 if (x.getText().equals(titulo1)
                         || x.getText().equals(titulo2)) {
                     result = x;

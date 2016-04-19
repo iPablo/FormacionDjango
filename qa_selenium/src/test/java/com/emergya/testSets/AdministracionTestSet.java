@@ -1,5 +1,7 @@
 package com.emergya.testSets;
 
+import static org.testng.AssertJUnit.assertEquals;
+
 import org.apache.log4j.Logger;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -26,6 +28,8 @@ public class AdministracionTestSet extends DefaultTestSet {
         super.afterAllIsSaidAndDone();
     }
 
+    AdministracionPage administracionPage;
+
     /*
      * Descripción: Acceso al admin de la app de Proyecto de iniciación con las
      * siguientes pruebas:
@@ -33,41 +37,315 @@ public class AdministracionTestSet extends DefaultTestSet {
      * - Login con User/Pass - Prueba CRUD Event - Prueba CRUD NewsItem
      * 
      */
-    @Test(description = "administracionPageSearch")
-    public void administracionPage() throws InterruptedException {
+    @Test(description = "administracionPageCreateNew")
+    public void createNew() {
         log.info("[log-TestSet]es que  " + this.getClass().getName()
-                + "- Start administracionPageSearch test");
+                + "- Start createNew test");
 
-        // Variable declaration and definition
-        AdministracionPage administracionPage = new AdministracionPage(driver);
+        administracionPage = new AdministracionPage(driver);
 
         try {
-            // Go to localhost:8000/admin/
-            // Enter usuario
-            // Enter contraseña
 
-            administracionPage.admin("admin", "password1234");
+            administracionPage.introUsuario("admin");
 
-            administracionPage.createEvent("Title QA", "Description QA",
-                    "2016-04-13", "2016-04-15");
+            administracionPage.introContrasenia("password1234");
 
-            administracionPage.updateEvent("Descripción QA editada");
+            administracionPage.clickOnLogin();
 
-            administracionPage.deleteEvent();
+            administracionPage.clickOnAddNews();
 
-            administracionPage.createNewsItem("Title QA", "Descripcion QA");
+            administracionPage.introTitle("Titulo QA");
 
-            administracionPage.updateNewsItem("Descripción QA editada");
+            administracionPage.introDescription("Description QA");
 
-            administracionPage.deleteNewsItem();
+            administracionPage.clickOnToday();
+
+            administracionPage.clickOnSave();
+
+            isCreacion(
+                    "The news item \"Description QA\" was added successfully.");
 
         } finally {
-            // Steps to clear the stage (Post steps)
+
+            administracionPage.clickOnItem();
+
+            administracionPage.clickOnDelete();
+
+            administracionPage.clickOnConfirmar();
+
         }
 
         log.info("[log-TestSet] " + this.getClass().getName()
-                + "- End googleDoSearchAndAccessToPage test");
+                + "- End createNew test");
 
+    }
+
+    @Test(description = "administracionPageCreateEvent")
+    public void createEvent() {
+        log.info("[log-TestSet]es que  " + this.getClass().getName()
+                + "- Start createEvent test");
+
+        administracionPage = new AdministracionPage(driver);
+
+        try {
+
+            administracionPage.introUsuario("admin");
+
+            administracionPage.introContrasenia("password1234");
+
+            administracionPage.clickOnLogin();
+
+            administracionPage.clickOnAddEvents();
+
+            administracionPage.introTitle("Titulo QA");
+
+            administracionPage.introDescription("Description QA");
+
+            administracionPage.clickOnStartDate();
+
+            administracionPage.clickOnEndDate();
+
+            administracionPage.clickOnSave();
+
+            isCreacion("The event \"Description QA\" was added successfully.");
+
+        } finally {
+
+            administracionPage.clickOnItem();
+
+            administracionPage.clickOnDelete();
+
+            administracionPage.clickOnConfirmar();
+
+        }
+
+        log.info("[log-TestSet] " + this.getClass().getName()
+                + "- End createEvent test");
+    }
+
+    @Test(description = "administracionPageUpdateNew")
+    public void UpdateNew() {
+        log.info("[log-TestSet]es que  " + this.getClass().getName()
+                + "- Start updateNew test");
+
+        administracionPage = new AdministracionPage(driver);
+
+        try {
+
+            administracionPage.introUsuario("admin");
+
+            administracionPage.introContrasenia("password1234");
+
+            administracionPage.clickOnLogin();
+
+            administracionPage.clickOnAddNews();
+
+            administracionPage.introTitle("Titulo QA");
+
+            administracionPage.introDescription("Description QA");
+
+            administracionPage.clickOnToday();
+
+            administracionPage.clickOnSave();
+
+            isCreacion(
+                    "The news item \"Description QA\" was added successfully.");
+
+            administracionPage.clickOnItem();
+
+            isValueTitleOK("Titulo QA");
+
+            administracionPage.introDescription("Description Editado");
+
+            administracionPage.clickOnSave();
+
+            isCreacion(
+                    "The news item \"Description Editado\" was changed successfully.");
+
+        } finally {
+
+            administracionPage.clickOnItem();
+
+            administracionPage.clickOnDelete();
+
+            administracionPage.clickOnConfirmar();
+
+        }
+
+        log.info("[log-TestSet] " + this.getClass().getName()
+                + "- End updateNew test");
+    }
+
+    @Test(description = "administracionPageUpdateEvent")
+    public void UpdateEvent() {
+        log.info("[log-TestSet]es que  " + this.getClass().getName()
+                + "- Start createNew test");
+
+        administracionPage = new AdministracionPage(driver);
+
+        try {
+
+            administracionPage.introUsuario("admin");
+
+            administracionPage.introContrasenia("password1234");
+
+            administracionPage.clickOnLogin();
+
+            administracionPage.clickOnAddEvents();
+
+            administracionPage.introTitle("Titulo QA");
+
+            administracionPage.introDescription("Description QA");
+
+            administracionPage.clickOnStartDate();
+
+            administracionPage.clickOnEndDate();
+
+            administracionPage.clickOnSave();
+
+            isCreacion("The event \"Description QA\" was added successfully.");
+
+            administracionPage.clickOnItem();
+
+            isValueTitleOK("Titulo QA");
+
+            administracionPage.introDescription("Description Editado");
+
+            administracionPage.clickOnSave();
+
+            isCreacion(
+                    "The event \"Description Editado\" was changed successfully.");
+
+        } finally {
+
+            administracionPage.clickOnItem();
+
+            administracionPage.clickOnDelete();
+
+            administracionPage.clickOnConfirmar();
+
+        }
+
+        log.info("[log-TestSet] " + this.getClass().getName()
+                + "- End createNew test");
+    }
+
+    @Test(description = "administracionPageDeleteNew")
+    public void deleteNew() {
+        log.info("[log-TestSet]es que  " + this.getClass().getName()
+                + "- Start deleteNew test");
+
+        administracionPage = new AdministracionPage(driver);
+
+        try {
+
+            administracionPage.introUsuario("admin");
+
+            administracionPage.introContrasenia("password1234");
+
+            administracionPage.clickOnLogin();
+
+            administracionPage.clickOnAddNews();
+
+            administracionPage.introTitle("Titulo QA");
+
+            administracionPage.introDescription("Description QA");
+
+            administracionPage.clickOnToday();
+
+            administracionPage.clickOnSave();
+
+            isCreacion(
+                    "The news item \"Description QA\" was added successfully.");
+
+            administracionPage.clickOnItem();
+
+            administracionPage.clickOnDelete();
+
+            administracionPage.clickOnConfirmar();
+
+            isBorrado(
+                    "The news item \"Description QA\" was deleted successfully.");
+
+        } finally {
+            // Ya está borrado
+        }
+
+        log.info("[log-TestSet] " + this.getClass().getName()
+                + "- End deleteNew test");
+
+    }
+
+    @Test(description = "administracionPageDeleteEvent")
+    public void deleteEvent() {
+        log.info("[log-TestSet]es que  " + this.getClass().getName()
+                + "- Start deleteEvent test");
+
+        administracionPage = new AdministracionPage(driver);
+
+        try {
+
+            administracionPage.introUsuario("admin");
+
+            administracionPage.introContrasenia("password1234");
+
+            administracionPage.clickOnLogin();
+
+            administracionPage.clickOnAddEvents();
+
+            administracionPage.introTitle("Titulo QA");
+
+            administracionPage.introDescription("Description QA");
+
+            administracionPage.clickOnStartDate();
+
+            administracionPage.clickOnEndDate();
+
+            administracionPage.clickOnSave();
+
+            isCreacion("The event \"Description QA\" was added successfully.");
+
+            administracionPage.clickOnItem();
+
+            administracionPage.clickOnDelete();
+
+            administracionPage.clickOnConfirmar();
+
+            isBorrado("The event \"Description QA\" was deleted successfully.");
+
+        } finally {
+            // Ya está borrado
+        }
+
+        log.info("[log-TestSet] " + this.getClass().getName()
+                + "- End deleteEvent test");
+
+    }
+
+    public void isCreacion(String mensaje) {
+        if (administracionPage == null) {
+            administracionPage = new AdministracionPage(driver);
+        }
+        String actual = administracionPage.getElementByXPath("mensaje")
+                .getText();
+        assertEquals(mensaje, actual);
+    }
+
+    public void isValueTitleOK(String title) {
+        if (administracionPage == null) {
+            administracionPage = new AdministracionPage(driver);
+        }
+        String actual = administracionPage.getElementById("title").getText();
+        assertEquals(title, actual);
+    }
+
+    public void isBorrado(String mensaje) {
+        if (administracionPage == null) {
+            administracionPage = new AdministracionPage(driver);
+        }
+        String actual = administracionPage.getElementByXPath("mensaje")
+                .getText();
+        assertEquals(mensaje, actual);
     }
 
 }

@@ -9,7 +9,7 @@
 {% if object_list %}
     <ul>
         {% for item in object_list %}
-            <li><a href="{% url 'base:EventsDetail' item.id %}">{{ item.title }}</a>
+            <li><a class="events" href="{% url 'base:EventsDetail' item.id %}">{{ item.title }}</a>
             </li>
             <br/>
         {% endfor %}
