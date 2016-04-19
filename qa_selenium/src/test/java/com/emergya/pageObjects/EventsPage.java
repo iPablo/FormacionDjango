@@ -124,21 +124,18 @@ public class EventsPage extends BasePageObject {
     }
 
     public void buttonUpdate() {
-        for (int i = 1; i <= driver.findElements(By.name("events"))
-                .size(); i++) {
-            if (driver.findElements(By.name("events")).get(i).getText()
-                    .equals("Test QA")) {
-                i++;
-                String aux = "/html/body/div/div/div/table/tbody/tr[" + i
-                        + "]/td[5]/a";
-                driver.findElementByXPath(aux).click();
-            }
+        /*
+         * for (int i = 1; i <= driver.findElements(By.name("events")) .size();
+         * i++) { if (driver.findElements(By.name("events")).get(i).getText()
+         * .equals("Test QA")) { i++; String aux =
+         * "/html/body/div/div/div/table/tbody/tr[" + i + "]/td[5]/a";
+         * driver.findElementByXPath(aux).click(); } }
+         */
+
+        if (this.getElementByXPath("buttonUpdate").isDisplayed()) {
+            this.getElementByXPath("buttonUpdate").click();
         }
 
-        /*
-         * if (this.getElementByXPath("buttonUpdate").isDisplayed()) {
-         * this.getElementByXPath("buttonUpdate").click(); }
-         */
     }
 
     /**

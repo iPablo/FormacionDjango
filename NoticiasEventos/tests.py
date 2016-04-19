@@ -18,22 +18,27 @@ class AdminTestCase(TestCase):
         self.assertContains(response, "Django administration")
 
 
+class ChartTestCase(TestCase):
+    """Class ChartTestCase"""
+
+    def test_chart(self):
+        response = self.client.get('/chart/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "NewsItem / Event")
+
+
 class NewsItemListAPITestCase(APITestCase):
     """Class NewsItemListAPITestCase"""
 
     def addUser(self):
-        User.objects.create_user(username='admin', password='passpass',
-                                 is_superuser=True)
-        return User.objects.get(username='admin')
+        return User.objects.create_user(username='admin', password='passpass',
+                                        is_superuser=True)
 
     def addNewsItem(self):
-        form = NewsItemForm(data={'title': 'test title',
-                            'description': 'test description',
-                                  'publish_date': timezone.now(),
-                                  'owner': self.addUser().id})
-        form.is_valid()
-        form.save()
-        return NewsItem.objects.get(title="test title")
+        return NewsItem.objects.create(title="test title",
+                                       description="test description",
+                                       publish_date=timezone.now(),
+                                       owner=self.addUser())
 
     def test_create(self):
         """Compruba si la API crea correctamente"""
@@ -53,35 +58,58 @@ class NewsItemListAPITestCase(APITestCase):
         response = self.client.get(reverse('NoticiasEventos:apiNewsItem'))
         self.assertEqual(response.status_code, 200)
 
-    def test_update_delete(self):
-        """Comprueba si la API muestra la vista para borrar y actualizar"""
-        self.addNewsItem()
-        x = NewsItem.objects.get(title='test title')
-        url = reverse('NoticiasEventos:apiNewsItemDetail', kwargs={
-            'pk': x.id})
-        response = self.client.get(url, format='json')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(NewsItem.objects.count(), 1)
-        self.assertEqual(NewsItem.objects.get().title, 'test title')
+    def test_update(self):
+        """Comprueba si la API puede actualizar"""
+        user = User.objects.create_user(username='adminAPI',
+                                        password='passpass',
+                                        is_superuser=True)
+        client = APIClient()
+        client.force_authenticate(user)
+        data = {'title': 'test',
+                'description': 'test',
+                'publish_date': '2016-01-01T00:00:00Z',
+                'owner': user.id}
+        response = client.post(reverse('NoticiasEventos:apiNewsItem'),
+                               data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        update = {'title': 'test update',
+                  'description': 'test',
+                  'publish_date': '2016-01-01T00:00:00Z',
+                  'owner': 1}
+        response = client.patch(reverse('NoticiasEventos:apiNewsItemDetail',
+                                kwargs={'pk': 1}), update,  format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_delete(self):
+        """Comprueba si la API puede borrar"""
+        user = User.objects.create_user(username='adminDelete',
+                                        password='passpass',
+                                        is_superuser=True)
+        client = APIClient()
+        client.force_authenticate(user)
+        noticia = {'title': 'test',
+                   'description': 'test',
+                   'publish_date': '2016-01-01T00:00:00Z',
+                   'owner': 1}
+        response = client.post(reverse('NoticiasEventos:apiNewsItem'), noticia,
+                               format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        response = client.delete(reverse('NoticiasEventos:apiNewsItemDetail',
+                                 kwargs={'pk': 1}), format='json')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 
 class EventAPITestCase(APITestCase):
     """Class EventAPITestCase"""
 
     def addUser(self):
-        User.objects.create_user(username='admin', password='passpass',
-                                 is_superuser=True)
-        return User.objects.get(username='admin')
+        return User.objects.create_user(username='admin', password='passpass',
+                                        is_superuser=True)
 
     def addEvent(self):
-        form = EventForm(data={'title': 'event title',
-                                        'description': 'event description',
-                                        'start_date': timezone.now(),
-                                        'end_date': timezone.now(),
-                                        'owner': self.addUser().id})
-        form.is_valid()
-        form.save()
-        return Event.objects.get(title="event title")
+        return Event.objects.create(title='event title',
+                                    description='event description',
+                                    owner=self.addUser())
 
     def test_create(self):
         '''Compruba si la API crea correctamente'''
@@ -102,16 +130,42 @@ class EventAPITestCase(APITestCase):
         response = self.client.get(reverse('NoticiasEventos:apiEvent'))
         self.assertEqual(response.status_code, 200)
 
-    def test_update_delete(self):
+    def test_update(self):
         """Comprueba si la API muestra la vista para borrar y actualizar"""
-        self.addEvent()
-        x = Event.objects.get(title='event title')
-        url = reverse('NoticiasEventos:apiEventDetail', kwargs={
-            'pk': x.id})
-        response = self.client.get(url, format='json')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(Event.objects.count(), 1)
-        self.assertEqual(Event.objects.get().title, 'event title')
+        user = User.objects.create_user(username='adminAPI',
+                                        password='passpass',
+                                        is_superuser=True)
+        client = APIClient()
+        client.force_authenticate(user)
+        data = {'title': 'test',
+                'description': 'test',
+                'owner': user.id}
+        response = client.post(reverse('NoticiasEventos:apiEvent'),
+                               data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        update = {'title': 'test update',
+                  'description': 'test',
+                  'owner': 1}
+        response = client.patch(reverse('NoticiasEventos:apiEventDetail',
+                                kwargs={'pk': 1}), update,  format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_delete(self):
+        """Comprueba si la API puede borrar"""
+        user = User.objects.create_user(username='adminDelete',
+                                        password='passpass',
+                                        is_superuser=True)
+        client = APIClient()
+        client.force_authenticate(user)
+        noticia = {'title': 'test',
+                   'description': 'test',
+                   'owner': 1}
+        response = client.post(reverse('NoticiasEventos:apiEvent'), noticia,
+                               format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        response = client.delete(reverse('NoticiasEventos:apiEventDetail',
+                                 kwargs={'pk': 1}), format='json')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 
 class NewsItemTestCase(TestCase):

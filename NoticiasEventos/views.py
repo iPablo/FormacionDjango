@@ -72,6 +72,24 @@ def index(request):
     """INDEX"""
     return render(request, 'NoticiasEventos/index.html', {})
 
+
+# CHART
+
+def chart(request):
+    """CHART"""
+    total = NewsItem.objects.count() + Event.objects.count()
+
+    try:
+        p_NewsItem = (NewsItem.objects.count() * 100) / total
+        p_Event = (Event.objects.count() * 100) / total
+    except ZeroDivisionError:
+        p_NewsItem = 0
+        p_Event = 0
+
+    return render(request, 'NoticiasEventos/chart.html', {
+                                                    "NewsItem": p_NewsItem,
+                                                    "Event": p_Event})
+
 # V1
 
 
