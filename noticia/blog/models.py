@@ -14,6 +14,7 @@ class Base(models.Model):
 
 class BaseNews(Base):
     description = models.TextField(null=True, blank=True)
+    image = models.ImageField(upload_to='media/noticia/blog/fotos', blank=True, null=True)
 
     def __str__(self):
         return self.title
