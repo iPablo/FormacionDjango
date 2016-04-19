@@ -97,17 +97,26 @@ def creaNoticia(request):
         return redirect('proyectoinicio:index')
     return render(request, 'proyectoinicio/creaNoticia.html', {'form': form})
 
+
 def votar(request, comentario_pk, vote):
     try:
-        voto = vote
         user = request.user
         comentario = Comment.objects.get(pk=comentario_pk)
         noticia_id = comentario.news.id
-        votar = Vote(user=user, comment=comentario, vote=voto)
-        votar.save()
+        votes = Vote.objects.filter(user=user, comment=comentario)
+        if votes:  # Si existe, se modificará
+            votar = votes[0]
+            votar.comment = comentario
+            votar.vote = vote
+            votar.save()
+            messages.add_message(request, messages.SUCCESS, 'Se ha modificado el voto correctamente', fail_silently=True)
+        else:  # Si no existiese, se creara
+            votar = Vote(user=user, comment=comentario, vote=vote)
+            votar.save()
+            messages.add_message(request, messages.SUCCESS, 'Se ha emitido el voto correctamente', fail_silently=True)
         return redirect('proyectoinicio:ampliarVBC', noticia_pk=noticia_id)
     except(IntegrityError):
-        messages.add_message(request, messages.SUCCESS, 'Ya has votado.', fail_silently=True)
+        messages.add_message(request, messages.SUCCESS, 'Ha habido algun error', fail_silently=True)
         return redirect('proyectoinicio:index')
 
 

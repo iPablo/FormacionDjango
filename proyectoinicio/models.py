@@ -40,8 +40,11 @@ class Event(BaseNews):
     end_date = models.DateTimeField('Fecha de fin')
     owner = models.ForeignKey('auth.User', related_name='event')
 
-    def dameDuracion(self):  # Devuelve la duracion en dias del evento en cuestion
-        if self.end_date < self.start_date:  # Correccion = si por error se metiese una fecha de finalizado antes que la de inicio, la duracion del evento sera de un dia
+    def dameDuracion(self):  # Devuelve la duracion en dias
+                                # del evento en cuestion
+        if self.end_date < self.start_date:
+                # Correccion = si por error se metiese una fecha de finalizado
+                # antes que la de inicio, la duracion del evento sera de un dia
             self.end_date = self.start_date
         diferencia = self.end_date - self.start_date
         return diferencia.days
@@ -52,12 +55,12 @@ class Comment(models.Model):
     author = models.CharField(max_length=20, default='Anonimo')
     text = models.TextField()
 
-    def avg(self): #Devuelve la media
+    def avg(self):  # Devuelve la media de votos del comentario
         votes = self.vote_set.all()
         count = 0
         for vote in votes:
             count = count + vote.vote
-        if count != 0:
+        if count != 0:  # evitar la division por cero
             avg = count/votes.count()
         else:
             avg = 0
@@ -70,4 +73,4 @@ class Vote(models.Model):
     vote = models.IntegerField(default=1)
 
     class Meta:
-        unique_together = ('user', 'comment')
+        unique_together = ('user', 'comment')  # Dependencia mutua, unica.

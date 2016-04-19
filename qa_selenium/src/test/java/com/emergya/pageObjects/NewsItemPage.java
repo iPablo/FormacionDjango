@@ -216,7 +216,7 @@ public class NewsItemPage extends BasePageObject {
         log.info("[log-NewsPage] " + this.getClass().getSimpleName()
                 + " - Start goToDelete method");
         clickOnVerMas();
-
+        driver.sleep(2);
         clickOnDeleteButton();
 
         log.info("[log-NewsPage] " + this.getClass().getSimpleName()

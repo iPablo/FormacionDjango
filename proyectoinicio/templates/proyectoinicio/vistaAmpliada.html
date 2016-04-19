@@ -59,7 +59,14 @@
 		{% else %}
 
 
-		<h4>Comentarios  <a href="{% url 'proyectoinicio:comentar' noticia.id %} " style="color: white; text-align:left;"><button class="btn btn-info">Añadir comentario</button></a></h4>
+		<h4>Comentarios  <a href="{% url 'proyectoinicio:comentar' noticia.id %} " style="color: white; text-align:left;"><button class="btn btn-info">Añadir comentario</button></a></h4>{% if messages %}
+		   {% for message in messages %}
+		   <u style="color:green;" {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+			   {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+			   {{ message }}
+		   </u>
+		   {% endfor %}
+	   {% endif %}
 		<div class="panel-group">
 		  {% for comentario in noticia.comment_set.all %}
 		   <div class="panel panel-info">
@@ -73,6 +80,11 @@
 					Votos recibidos: {{ comentario.vote_set.all.count }} | Nota media: {{ comentario.avg }}  |
 
 					{% if user.is_active %}
+						{% for voto in comentario.vote_set.all %}
+						{% if voto.user = user %}
+						 <u style="color:red;">Ya ha votado.</u> |
+						{% endif %}
+						{% endfor %}
 					 <b>Votar: </b> <a href="{% url 'proyectoinicio:vota' comentario.id 1 %}">1</a> <a href="{% url 'proyectoinicio:vota' comentario.id 2 %}">2</a> <a href="{% url 'proyectoinicio:vota' comentario.id 3 %}">3</a> <a href="{% url 'proyectoinicio:vota' comentario.id 4 %}">4</a> <a href="{% url 'proyectoinicio:vota' comentario.id 5 %}">5</a>
 					 <div style="text-align:right;" ><a href="{% url 'proyectoinicio:borrarC' comentario.id %}"><button class="btn btn-danger">Borrar comentario</button></a></div>
 					{% else %}
