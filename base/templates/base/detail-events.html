@@ -1,7 +1,5 @@
-<head>
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-</head>
+{% extends 'base/base.html' %}
+{% block content %}
 <div class="panel panel-default">
     <div class="panel-heading"><h1>{{ event.title }}</h1></div>
       <div class="panel-body">
@@ -12,9 +10,10 @@
 <h5>
     {{ event.start_date }} - {{ event.end_date }}
 </h5>
-<a href="{% url 'base:update_event' event.id %}">Editar</a> | 
+<a href="{% url 'base:update_event' event.id %}">Editar</a> |
 <a href="{% url 'base:delete_event' event.id %}">Eliminar</a><br/><br/>
 <a href="{% url 'base:index' %}"><button>Volver</button></a>
 </div>
 </div>
 </div>
+{% endblock %}

@@ -1,7 +1,5 @@
-<head>
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-</head>
+{% extends 'base/base.html' %}
+{% block content %}
 <h1>Nueva noticia</h1>
 <form method="POST">{% csrf_token %}
     {{ form.as_p }}
@@ -9,3 +7,4 @@
 </form>
 
 <a href="{% url 'base:index' %}"><button>Volver</button></a>
+{% endblock %}
