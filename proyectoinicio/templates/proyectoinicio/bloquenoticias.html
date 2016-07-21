@@ -9,13 +9,16 @@
 <body>
 <div class="container">
 <div class="jumbotron">
-	<h1 style="color: #A1D490; text-align: center; text-shadow: 2px 2px green">Noticias Django</h1>
+	{% if user.is_active %}
+	<b>Usuario:</b> {{ user.username }} <a href="{% url 'proyectoinicio:logout' %}"><button class="btn btn-warning">Logout</button></a>
+	{% endif %}
+	<h1 id="id_noticias_django" style="color: #A1D490; text-align: center; text-shadow: 2px 2px green">Noticias Django</h1>
 </div>
 <div class="panel panel-primary">
 	<div class="panel-body" style="text-align: center;">
 		<p>¿Quieres crear una noticia? Pulsa <a href="{% url 'proyectoinicio:crearNoticia' %}">¡aquí!</a></p>
-        <p>Si quieres probar en VBC, 
-         Pulsa <a href="{% url 'proyectoinicio:crearVBC' %}">¡aquí!</a></p>
+        <p>Si quieres probar en VBC,
+         Pulsa <a id="crearNoticia" href="{% url 'proyectoinicio:crearVBC' %}">¡aquí!</a></p>
 	</div>
 </div>
 {% if bloque_noticias %}
@@ -25,10 +28,12 @@
         	<div class="panel-heading">
         		<h3>{{ noticia.title }}
                 </h3>
-                {% if noticia.ha_pasado %}
-                <h4 style="text-align: right; color: black">Esta noticia es antigua.</h4>
-                {% endif %}
         	</div>
+			{% if noticia.ha_pasado %}
+			<div class="panel-body">
+			<h4 style="text-align: right; color: black">Esta noticia es antigua.</h4>
+		</div>
+			{% endif %}
         	<div class="panel-footer" style="text-align: right;">
         		<a href="{% url 'proyectoinicio:ampliar' noticia.id %}" style="color: white"><button class="btn btn-primary">Ver mas</button></a>
                 <a href="{% url 'proyectoinicio:ampliarVBC' noticia.id %}" style="color: white"><button class="btn btn-success">Ver mas (VBC)</button></a>

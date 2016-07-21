@@ -9,11 +9,15 @@
 <body>
 <div class="container">
 <div class="jumbotron">
+	{% if user.is_active %}
+	<b>Usuario:</b> {{ user.username }} <a href="{% url 'proyectoinicio:logout' %}"><button class="btn btn-warning">Logout</button></a>
+	{% endif %}
 	<h1 style="color: #A1D490; text-align: center; text-shadow: 2px 2px green">Ampliación</h1>
+
 </div>
 
 {% if noticia %}
-        <div class="panel {% if noticia.ha_pasado %}
+         <div class="panel {% if noticia.ha_pasado %}
                             panel-warning
                             {% else %}
                             panel-primary
@@ -41,13 +45,60 @@
                 <li><a href="{% url 'proyectoinicio:editarVBC' noticia.id%}">Editar (VBC)</a></li>
                 <li><a onclick="return confirm('¿está seguro?')" href="{% url 'proyectoinicio:borrar' noticia.id%}">Borrar</a></li>
                 <li><a href="{% url 'proyectoinicio:borrarVBC' noticia.id%}">Borrar (VBC)</a></li>
+				{% if not user.is_active %}
+				<li><a href="{% url 'proyectoinicio:login' %}">Login</a></li>
+				{% endif %}
+				{% if user.is_active %}
+				<li><a href="{% url 'proyectoinicio:logout' %}">Log Out</a></li>
+				{% endif %}
             </ul>
         </div>
         </div>
+	{% if noticia.comment_set.all.count == 0 %}
+		<h4>Esta noticia no tiene comentarios aún</h4>  <a href="{% url 'proyectoinicio:comentar' noticia.id %} " style="color: white;"><button class="btn btn-success">Añadir comentario</button></a>
+		{% else %}
+
+
+		<h4>Comentarios  <a href="{% url 'proyectoinicio:comentar' noticia.id %} " style="color: white; text-align:left;"><button class="btn btn-info">Añadir comentario</button></a></h4>{% if messages %}
+		   {% for message in messages %}
+		   <u style="color:green;" {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+			   {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+			   {{ message }}
+		   </u>
+		   {% endfor %}
+	   {% endif %}
+		<div class="panel-group">
+		  {% for comentario in noticia.comment_set.all %}
+		   <div class="panel panel-info">
+				<div class="panel-heading" style="text-align:left;">
+					<u>Autor:</u> <b>{{ comentario.author }}</b>
+				</div>
+				<div class="panel-body" style="text-align:center;">
+				    	<cite> "{{ comentario.text }}"</cite>
+				</div>
+				<div class="panel-footer">
+					Votos recibidos: {{ comentario.vote_set.all.count }} | Nota media: {{ comentario.avg }}  |
+
+					{% if user.is_active %}
+						{% for voto in comentario.vote_set.all %}
+						{% if voto.user = user %}
+						 <u style="color:red;">Ya ha votado.</u> |
+						{% endif %}
+						{% endfor %}
+					 <b>Votar: </b> <a href="{% url 'proyectoinicio:vota' comentario.id 1 %}">1</a> <a href="{% url 'proyectoinicio:vota' comentario.id 2 %}">2</a> <a href="{% url 'proyectoinicio:vota' comentario.id 3 %}">3</a> <a href="{% url 'proyectoinicio:vota' comentario.id 4 %}">4</a> <a href="{% url 'proyectoinicio:vota' comentario.id 5 %}">5</a>
+					 <div style="text-align:right;" ><a href="{% url 'proyectoinicio:borrarC' comentario.id %}"><button class="btn btn-danger">Borrar comentario</button></a></div>
+					{% else %}
+					 <b>Se requiere ser usuario registrado para votar</b>
+					{% endif %}
+
+				</div>
+			</div>
+		  {% endfor %}
+		  </div>
+	{% endif %}
 {% else %}
     <p>Esa noticia no existe.</p>
 {% endif %}
 </div>
-
 </body>
 </html>

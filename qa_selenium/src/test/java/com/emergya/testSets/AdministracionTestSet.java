@@ -1,5 +1,6 @@
 package com.emergya.testSets;
 
+import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
 import org.apache.log4j.Logger;
@@ -38,31 +39,27 @@ public class AdministracionTestSet extends DefaultTestSet {
      * goes directly to admin.
      * 
      * Pre steps:
-     * - Create the main page and access to the admin
+     * - Log in as the administrator
      *   
      * Steps:
-     * - Go to folders
-     * - Create a new Private Folder with Anonymous user enable
-     * - Go to Asset Library
-     * - Upload an asset
-     * - Publish the uploaded asset
-     * - Save the uploaded asset in the created folder
-     * - Access to created asset
-     * - Open asset details
-     * - Copy the url of asset
-     * - Access to the copy url with a new private browse
-     * - Check that go to Landing page asset url
-     * 
-     * Post steps:
-     * - Delete uploaded asset
-     * - Delete create folder
+     * - Go the admin page
+     * - Check is the title is visible
+     * - Go to create event page
+     * - Check if the inputs are visible
+     * - Create an event
+     * - Check if the event was created
+     *  -Delete and check again.
+     * - Go forward to the news page
+     * - Create some news
+     * - Check if they were created
+     * -
+     * Post Steps:
      * - Logout
-     * - Delete user
      * @throws InterruptedException 
      * 
      */
     @Test(description = "adminPage")
-    public void adminPage() throws InterruptedException {
+    public void login() throws InterruptedException {
         log.info("[log-TestSet] " + this.getClass().getName()
                 + "- Start accessToPrivateFolderWithoutLogin test");
         administracionPage = new AdministracionPage(driver);
@@ -88,10 +85,92 @@ public class AdministracionTestSet extends DefaultTestSet {
             * are available
             */
             areInputsDisplayed();
+            Thread.sleep(2000);
+
+            /**
+             * Proceeding to create a new event
+             */
+            administracionPage.createEvent("Hola", "Descripcion tonta");
+
+            /**
+             * This assertion checks if the event was created successfully
+             */
+            isMessageDisplayed();
+            Thread.sleep(2000);
+            /**
+             * This method goes back to the event page detail.
+             */
+            administracionPage.goToLastEvent();
+            /**
+             * We should check if we are in the Last Event.
+             */
+            isBrowserOnEventDetail();
+            /**
+             * Once there we click on Delete.
+             */
+            administracionPage.clickOnDeleteButton();
+            /**
+             * And confirm.
+             */
+            administracionPage.confirmDelete();
+            /**
+             * We check again if the message was displayed and is succesfull
+             */
+            isMessageDisplayed();
+            Thread.sleep(2000);
+            /**
+             * We go forward to the News Item page to check
+             */
+            administracionPage.goToNewsItemPage();
+            Thread.sleep(3000);
+            /**
+             * Checking if we are on the NewsItem page
+             */
+            isBrowserOnNewsItem();
+            /**
+             * Redirecting to news creation page
+             */
+            administracionPage.goToNewsCreation();
+            /**
+             * Check if everything is correct about the inputs
+             */
+            areInputsDisplayed();
+            /**
+             * We create a new News Item now.
+             */
+            administracionPage.createNews("Hola", "Noticia caca");
+            /**
+             * This is for confirming if we are succesful
+             */
+            isMessageDisplayed();
+            /**
+             * We delete the created news so we go forward to the detail
+             */
+            administracionPage.goToNewsDetail();
+            /**
+             * We check if we are on the correct page
+             */
+            isBrowserOnNewsItemDetail();
+            /**
+             * Once there we need to click on the delete button
+             */
+            administracionPage.clickOnDeleteNewsButton();
+            /**
+             * And then confirm the delete.
+             */
+            administracionPage.confirmDelete();
+            /**
+             * And finally we check if the delete was succesfull
+             */
+            isMessageDisplayed();
             Thread.sleep(5000);
+            /**
+             * After 5 seconds, we proceed to log out.
+             */
 
         } finally {
-
+            administracionPage.logOut();
+            Thread.sleep(3000);
         }
     }
 
@@ -108,7 +187,7 @@ public class AdministracionTestSet extends DefaultTestSet {
     }
 
     /**
-     * This assertion is made for checking if the inputs of the create event admin page
+     * This assertion is made for checking if the inputs of the create event administrator page
      * are shown.
      */
     public void areInputsDisplayed() {
@@ -119,4 +198,50 @@ public class AdministracionTestSet extends DefaultTestSet {
                 administracionPage.isElementVisibleById("form"));
     }
 
+    /**
+     * Assertion to check if we are in the Event Detail page
+     */
+
+    public void isBrowserOnEventDetail() {
+        if (administracionPage == null) {
+            administracionPage = new AdministracionPage(driver);
+        }
+        assertTrue("The inputs are not shown. Something is wrong",
+                administracionPage.isElementVisibleById("form2"));
+    }
+
+    /**
+     * Assertion to check if we are in the News Detail page
+     */
+
+    public void isBrowserOnNewsItemDetail() {
+        if (administracionPage == null) {
+            administracionPage = new AdministracionPage(driver);
+        }
+        assertTrue("The inputs are not shown. Something is wrong",
+                administracionPage.isElementVisibleById("form3"));
+    }
+
+    /**
+     * This assertion is made for checking if the confirmation message is visible
+     */
+    public void isMessageDisplayed() {
+        if (administracionPage == null) {
+            administracionPage = new AdministracionPage(driver);
+        }
+        assertTrue("The message can't be found, please check it out",
+                administracionPage
+                        .isElementVisibleByXPath("mensajeconfirmacion"));
+    }
+
+    /**
+     * This assertion checks if we are in the NewsItem Page.
+     */
+    public void isBrowserOnNewsItem() {
+        if (administracionPage == null) {
+            administracionPage = new AdministracionPage(driver);
+        }
+        assertEquals("NEWS ITEM", administracionPage
+                .getElementByXPath("newsitemtitle").getText());
+    }
 }
