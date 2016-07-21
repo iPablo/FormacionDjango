@@ -1,4 +1,9 @@
-<h1>Noticias</h1>
+{% extends 'base/base.html' %}
+{% block content %}
+<div class="panel panel-default">
+    <div class="panel-heading"><h1>Noticias</h1></div>
+      <div class="panel-body">
+
 {% if news %}
     <ul>
     {% for item in news %}
@@ -8,8 +13,14 @@
 {% else %}
     <p>No hay noticias disponibles</p>
 {% endif %}
+<a href="{% url 'base:create_new' %}"><button>Nueva</button></a>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading"><h1>Eventos</h1></div>
+      <div class="panel-body">
 
-<h1>Eventos</h1>
 {% if events %}
     <ul>
     {% for item in events %}
@@ -17,5 +28,12 @@
     {% endfor %}
     </ul>
 {% else %}
-    <p>No hay noticias disponibles</p>
+    <p>No hay eventos disponibles</p>
 {% endif %}
+<a href="{% url 'base:create_event' %}"><button>Nuevo</button></a><br/>
+
+</div>
+</div>
+</div>
+<a href="{% url 'base:index' %}"><button>Volver</button></a>
+{% endblock %}

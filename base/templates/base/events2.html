@@ -1,0 +1,24 @@
+{% extends 'base/base.html' %}
+{% block content %}
+<div class="panel panel-default">
+    <div class="panel-heading"><h1>Eventos (Clases)</h1></div>
+      <div class="panel-body">
+
+{% if object_list %}
+    <ul>
+        {% for item in object_list %}
+            <li><a class="events" href="{% url 'base:EventsDetail' item.id %}">{{ item.title }}</a>
+            </li>
+            <br/>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No hay eventos disponibles</p>
+{% endif %}
+<a href="{% url 'base:EventsCreate' %}"><button>Nuevo</button></a>
+
+<a href="{% url 'base:index' %}"><button>Volver</button></a>
+</div>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base/base.html' %}
+{% block content %}
+<div class="panel panel-default">
+    <div class="panel-heading"><h2>Noticias</h2></div>
+      <div class="panel-body">
+
+{% if object_list %}
+    <ul>
+        {% for item in object_list %}
+            <li><a href="{% url 'base:NewsItemDetail' item.id %}">{{ item.title }}</a></li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No hay noticias disponibles</p>
+{% endif %}
+<a href="{% url 'base:NewsCreate' %}"><button>Nueva</button></a>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading"><h2>Eventos</h2></div>
+      <div class="panel-body">
+
+{% if event_list %}
+    <ul>
+        {% for item in event_list %}
+            <li><a href="{% url 'base:EventsDetail' item.id %}">{{ item.title }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No hay eventos disponibles</p>
+{% endif %}
+<a href="{% url 'base:EventsCreate' %}"><button>Nuevo</button></a><br/>
+
+</div>
+</div>
+</div>
+<a href="{% url 'base:index' %}"><button>Volver</button></a>
+{% endblock %}

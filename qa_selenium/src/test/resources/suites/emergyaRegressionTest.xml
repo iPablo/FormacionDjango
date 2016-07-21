@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This test suite contains all the regression tests -->
+<suite name="EmergyaRegressionTest" enabled="true">
+	<test name="GoogleTest" order-by-instances="true">
+		<classes>
+			<class name="com.emergya.testSets.GoogleTestSet" >
+				<methods>
+                    <include name="googleMainPageSearch" />
+                    <include name="googleDoSearchAndAccessToPage" />
+                </methods>
+            </class>
+		</classes>
+	</test>
+</suite>

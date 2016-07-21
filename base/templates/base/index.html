@@ -1,3 +1,36 @@
-<a href="v1/todos">Todos</a><br>
-<a href="v1/news">Noticias</a><br>
-<a href="v1/events">Eventos</a>
+{% extends 'base/base.html' %}
+{% block content %}
+<html>
+<body>
+  <center>
+    <h1>Poyecto Iniciación Python/Django</h1>
+    <img src="http://sean-delaney.com/static/images/django-logo.png" width="50%" height="50%">
+  </center>
+  <center>
+  <br/>
+  <div class="panel panel-default">
+    <div class="panel-heading"><h1 id="arranque">Funciones</h1></div>
+      <div class="panel-body">
+        <a href="v1/todos">Todos</a> |
+        <a href="v1/news">Noticias</a> |
+        <a href="v1/events">Eventos</a> |
+        <a href="API/news">API</a>
+      </div>
+    </div>
+  </div>
+  </center>
+  <center>
+  <div class="panel panel-default">
+    <div class="panel-heading"><h1>Clases</h1></div>
+      <div class="panel-body">
+        <a href="v2/todos">Todos</a> |
+        <a href="v2/news">Noticias</a> |
+        <a href="v2/events">Eventos</a> |
+        <a href="API/news">API</a>
+      </div>
+    </div>
+  </div>
+</center>
+</body>
+</html>
+{% endblock %}

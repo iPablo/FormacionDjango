@@ -4,6 +4,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.utils import timezone
 
 
 class Base(models.Model):
@@ -15,6 +16,9 @@ class Base(models.Model):
     def __str__(self):
         return self.title
 
+    def __unicode__(self):
+        return self.title
+
 
 class BaseNews(Base):
     description = models.TextField()
@@ -22,9 +26,12 @@ class BaseNews(Base):
     def __str__(self):
         return self.description
 
+    def __unicode__(self):
+        return self.description
+
 
 class NewsItem(BaseNews):
-    publish_date = models.DateField()
+    publish_date = models.DateField(default=timezone.now)
 
 
 class Event(BaseNews):
