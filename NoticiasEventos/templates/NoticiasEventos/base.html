@@ -20,6 +20,9 @@
 					<li><a href="{% url 'NoticiasEventos:v1List' %}">V1 News</a></li>
 					<li><a href="{% url 'NoticiasEventos:v2List' %}">V2 News</a></li>
 					<li><a href="{% url 'NoticiasEventos:eventList' %}">Events</a></li>
+					<li><a href="{% url 'NoticiasEventos:apiNewsItem' %}">API NewsItem</a></li>
+					<li><a href="{% url 'NoticiasEventos:apiEvent' %}">API Event</a></li>
+					<li><a href="{% url 'NoticiasEventos:chart' %}">Chart</a></li>
 				</ul>
 			</div>
 		</div>
@@ -34,6 +37,60 @@
 	</div>
 	
 	<script src="https://code.jquery.com/jquery.js"></script>
+	<script type="text/javascript">
+    $(function () {
+        $('#container').highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: 0,
+                plotShadow: false
+            },
+            title: {
+                text: 'Porcentaje <br> NewsItem / Event',
+                align: 'center',
+                verticalAlign: 'top',
+                y: 40
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    dataLabels: {
+                        enabled: true,
+                        distance: -50,
+                        style: {
+                            fontWeight: 'bold',
+                            color: 'white',
+                            textShadow: '0px 1px 2px black'
+                        }
+                    },
+                    startAngle: -90,
+                    endAngle: 90,
+                    center: ['50%', '75%']
+                }
+            },
+            series: [{
+                type: 'pie',
+                name: 'Porcentaje',
+                innerSize: '50%',
+                data: [
+                ['NewsItem', {{NewsItem}}],
+                ['Event', {{Event}}],
+                {
+                    name: 'Proprietary or Undetectable',
+                    y: 0.2,
+                    dataLabels: {
+                        enabled: false
+                    }
+                }
+                ]
+            }]
+        });
+    });
+</script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
 	<!-- Bootstrap JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 </body>

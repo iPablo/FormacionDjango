@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This test suite contains all the failed tests. When you throw any test suite 
+(only complete test suites), the failed tests are automatically  added to this file -->
+<suite name="TestSets" enabled="true">
+  <test name="FailedTests" order-by-instances="true">
+    <classes />
+  </test>
+</suite>
+

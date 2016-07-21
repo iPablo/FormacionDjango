@@ -13,7 +13,7 @@
 	</thead>
 	<tbody>
 		{% if result %}
-		{% for x in result %}
+		{% for x in result.object_list %}
 		<tr>
 			<td>{{ x.title }}</td>
 			<td>{{ x.description }}</td>
@@ -32,4 +32,9 @@
 <ul class="nav navbar-nav">
 	<li><a href="{% url 'NoticiasEventos:v1Create' %}"><span class="glyphicon glyphicon-plus"></span> Add Item</a></li>
 </ul>
+<br>
+<br>
+<div class="row col-md-12" id="pagination">
+    {{ result.render }}
+</div>
 {% endblock %}
